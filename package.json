@@ -4,6 +4,10 @@
   "description": "AI-governed asset management platform — 7 apps, 25 agents, multi-jurisdictional compliance via Sentinel-Ops SOE",
   "type": "module",
   "scripts": {
+    "deploy:soe": "node deploy/deploy-soe.js",
+    "deploy:soe:dry-run": "node deploy/deploy-soe.js --dry-run",
+    "scenarios": "node demo/run-all-scenarios.js",
+    "scenarios:verbose": "node demo/run-all-scenarios.js --verbose",
     "test": "node --test tests/**/*.test.js",
     "test:risk-compass": "node --test tests/risk-compass/*.test.js",
     "test:ops-fabric": "node --test tests/ops-fabric/*.test.js",

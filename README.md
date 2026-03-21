@@ -428,6 +428,91 @@ that maps SR 11-7, EU AI Act Art.9, MAS FEAT, FCA SYSC 7, and DORA to a single c
 
 ---
 
+## Run Against Your Own AWS Account
+
+Deploy Sentinel-Ops in your AWS account with Bedrock and run live ALLOW/DENY/ESCALATE scenarios.
+
+### Prerequisites
+
+- Sentinel-Ops deployed in your AWS account ([Getting Started](https://github.com/aiworksllc/sentinel-ops/blob/main/docs/GETTING_STARTED.md))
+- API key retrieved from Secrets Manager
+
+### Configure
+
+```bash
+# Get credentials from CloudFormation stack outputs
+SOE_API_URL=$(aws cloudformation describe-stacks --stack-name sentinel-ops \
+  --query 'Stacks[0].Outputs[?OutputKey==`SoeApiUrlHttps`].OutputValue' --output text)
+
+SOE_API_KEY_ARN=$(aws cloudformation describe-stacks --stack-name sentinel-ops \
+  --query 'Stacks[0].Outputs[?OutputKey==`SoeApiKeySecretArn`].OutputValue' --output text)
+SOE_API_KEY=$(aws secretsmanager get-secret-value --secret-id "$SOE_API_KEY_ARN" \
+  --query SecretString --output text | python3 -c "import sys,json; print(json.load(sys.stdin)['key'])")
+
+export SOE_API_URL SOE_API_KEY
+```
+
+### Deploy SOE Definitions (25 agents across 7 apps)
+
+```bash
+# Preview
+npm run deploy:soe:dry-run
+
+# Deploy
+npm run deploy:soe
+
+# Deploy single app
+SOE_API_URL=$SOE_API_URL SOE_API_KEY=$SOE_API_KEY node deploy/deploy-soe.js --app trade-sentinel
+```
+
+### Run Live Scenarios
+
+```bash
+# All 7 apps (18 scenarios)
+npm run scenarios
+
+# Single app
+SOE_API_URL=$SOE_API_URL SOE_API_KEY=$SOE_API_KEY node demo/run-all-scenarios.js --app trade-sentinel
+
+# Verbose (show risk points, layer, agent details)
+npm run scenarios:verbose
+```
+
+Expected output:
+
+```
+  AssetCo Live Scenarios
+  Target: https://your-alb.us-east-1.elb.amazonaws.com
+  Apps: 7, Scenarios: 18
+
+  === alpha-engine ===
+
+  [PASS] Rebalance within mandate limits
+         Expected: allow | Got: allow
+
+  [PASS] DENY — write to compliance directory
+         Expected: deny | Got: deny
+
+  === trade-sentinel ===
+
+  [PASS] DENY — Chinese wall violation (read research pre-publication)
+         Expected: deny | Got: deny
+
+  ...
+
+  Results: 18/18 passed, 0 failed
+```
+
+### Run Local Tests (no API needed)
+
+```bash
+npm test                          # All 709 tests
+npm run test:trade-sentinel       # Single app
+npm run demo:risk-compass         # Local risk model demo
+```
+
+---
+
 ## Related Repositories
 
 - [**Sentinel-Ops**](https://github.com/aiworksllc/sentinel-ops) — The SOE enforcement engine
