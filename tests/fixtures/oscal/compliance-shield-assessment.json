@@ -1,6 +1,6 @@
 {
   "assessment-results": {
-    "uuid": "ar-04d5e6f7-a8b9-0123-defa-123456789012",
+    "uuid": "d5580b93-2eea-46f8-b56e-cabd0f126625",
     "metadata": {
       "title": "ComplianceShield SOE Compliance Assessment",
       "last-modified": "2026-03-20T12:00:00.000Z",
@@ -12,12 +12,12 @@
       ],
       "parties": [
         {
-          "uuid": "party-assetco-compliance",
+          "uuid": "b268b1d2-44be-40aa-940c-955c9531e220",
           "type": "organization",
           "name": "AssetCo Global Asset Management — Compliance"
         },
         {
-          "uuid": "party-sentinel-ops",
+          "uuid": "35a90c35-4d1c-4f27-bbfd-5ce5f276922a",
           "type": "organization",
           "name": "YadriWorks Inc. — Sentinel-Ops"
         }
@@ -29,157 +29,157 @@
     "local-definitions": {
       "components": [
         {
-          "uuid": "comp-trade-surveiller",
+          "uuid": "72a79520-ed96-431d-91d3-6bc97945586b",
           "type": "software",
           "title": "trade-surveiller agent",
           "description": "Surveillance agent with broadest read access. Cannot write to trading systems.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
-            { "name": "soe-definition", "value": "soe-definitions/compliance-shield/trade-surveiller.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/compliance-shield/trade-surveiller.soe.json" }
           ]
         },
         {
-          "uuid": "comp-position-reporter",
+          "uuid": "8f3b0430-76bd-4d50-bfae-d015336df992",
           "type": "software",
           "title": "position-reporter agent",
           "description": "Generates regulatory position reports (EMIR, MiFIR). Write to reports/ only.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
-            { "name": "soe-definition", "value": "soe-definitions/compliance-shield/position-reporter.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/compliance-shield/position-reporter.soe.json" }
           ]
         },
         {
-          "uuid": "comp-breach-detector",
+          "uuid": "3b77f06e-ab0a-4437-9249-70838434e7e5",
           "type": "software",
           "title": "breach-detector agent",
           "description": "Detects compliance breaches. Observe-and-escalate only — cannot remediate.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
-            { "name": "soe-definition", "value": "soe-definitions/compliance-shield/breach-detector.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/compliance-shield/breach-detector.soe.json" }
           ]
         },
         {
-          "uuid": "comp-regulatory-filer",
+          "uuid": "0f6b07ea-e8b5-42ae-80c1-6fa290f68492",
           "type": "software",
           "title": "regulatory-filer agent",
           "description": "Prepares regulatory filings. Can set DRAFT/PENDING_REVIEW only — SUBMITTED is human-only.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
-            { "name": "soe-definition", "value": "soe-definitions/compliance-shield/regulatory-filer.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/compliance-shield/regulatory-filer.soe.json" }
           ]
         }
       ]
     },
     "results": [
       {
-        "uuid": "result-compliance-shield-20260320",
+        "uuid": "6d3743fc-06c6-4437-87de-8b733ea96f0c",
         "title": "ComplianceShield Daily SOE Assessment — 2026-03-20",
         "description": "Automated assessment of SOE enforcement for all ComplianceShield agents",
         "start": "2026-03-20T00:00:00.000Z",
         "end": "2026-03-20T23:59:59.999Z",
         "findings": [
           {
-            "uuid": "finding-cs-001",
+            "uuid": "59d8aa10-6c89-4567-974a-871065fecc22",
             "title": "FINRA 3110 Surveillance — Compliant",
             "description": "trade-surveiller executed full surveillance scan across TradeSentinel, AlphaEngine, OpsFabric sources. Read-only verified.",
             "target": {
               "type": "objective-id",
               "target-id": "finra-3110-supervisory-system",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-cs-001" }]
+            "related-observations": [{ "observation-uuid": "39a529ab-eeb5-4127-a35d-ab4cbde4e1de" }]
           },
           {
-            "uuid": "finding-cs-002",
+            "uuid": "0b8e5404-e453-45e7-9d4f-3cb354a053d3",
             "title": "Information Barrier Crossing — Detected and Logged",
             "description": "breach-detector identified information barrier crossing by alpha-engine/portfolio-optimizer accessing research-nexus pre-publication data.",
             "target": {
               "type": "objective-id",
               "target-id": "sox-section302-information-barriers",
-              "status": { "state": "not-satisfied" }
+              "status": "not-satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-cs-002" }]
+            "related-observations": [{ "observation-uuid": "dd5ca6b6-23cc-405d-bca5-d49f62535543" }]
           },
           {
-            "uuid": "finding-cs-003",
+            "uuid": "43f3c777-7b62-4112-ad79-a63828b2fac7",
             "title": "Unauthorized SUBMITTED Transition — Blocked",
             "description": "regulatory-filer attempted to set EMIR-TR filing status to SUBMITTED. SOE blocked — SUBMITTED is human-only per SOX Section 404.",
             "target": {
               "type": "objective-id",
               "target-id": "sox-section404-internal-controls",
-              "status": { "state": "not-satisfied" }
+              "status": "not-satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-cs-003" }]
+            "related-observations": [{ "observation-uuid": "756a9820-de6e-4239-8b2f-7b2cc890446f" }]
           },
           {
-            "uuid": "finding-cs-004",
+            "uuid": "9ad950dc-2f49-4de8-bba1-c5cc0c884df0",
             "title": "Wash Trading Pattern — Detected",
             "description": "trade-surveiller detected wash trading pattern for instrument US0378331005. MAR Art.12 pattern detection working correctly.",
             "target": {
               "type": "objective-id",
               "target-id": "mar-art12-market-manipulation",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-cs-004" }]
+            "related-observations": [{ "observation-uuid": "86e79dbd-d5a9-4a27-b070-73f3ebacb457" }]
           },
           {
-            "uuid": "finding-cs-005",
+            "uuid": "a5ce2db7-af35-4948-bfcb-64fb2a39ef27",
             "title": "DORA Operational Resilience — Compliant",
             "description": "All ComplianceShield agents maintained uptime and logging throughout assessment period. Surveillance continuity ensured.",
             "target": {
               "type": "objective-id",
               "target-id": "dora-operational-resilience",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-cs-005" }]
+            "related-observations": [{ "observation-uuid": "d942946c-73a8-4b8a-aa4e-6a177eaf19ef" }]
           }
         ],
         "observations": [
           {
-            "uuid": "obs-cs-001",
+            "uuid": "39a529ab-eeb5-4127-a35d-ab4cbde4e1de",
             "description": "Full surveillance scan: 3 source systems, pattern-detector ran with FULL scan mode. Wash trading pattern detected for US0378331005. Risk score: 22 (Green).",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-trade-surveiller", "type": "component" }],
+            "subjects": [{ "subject-uuid": "72a79520-ed96-431d-91d3-6bc97945586b", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-f2a3b4c5d6e7", "description": "Chronicle audit — surveillance scan" }
             ]
           },
           {
-            "uuid": "obs-cs-002",
+            "uuid": "dd5ca6b6-23cc-405d-bca5-d49f62535543",
             "description": "Barrier crossing: alpha-engine/portfolio-optimizer attempted read of research-nexus/pre-publication/alpha-signals. breach-detector created CRITICAL alert. Risk score: 62 (Red).",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-breach-detector", "type": "component" }],
+            "subjects": [{ "subject-uuid": "3b77f06e-ab0a-4437-9249-70838434e7e5", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-a3b4c5d6e7f8", "description": "Chronicle audit — barrier crossing alert" }
             ]
           },
           {
-            "uuid": "obs-cs-003",
+            "uuid": "756a9820-de6e-4239-8b2f-7b2cc890446f",
             "description": "Unauthorized status transition: regulatory-filer tried SUBMITTED on EMIR-TR-20260319. Blocked — human-only gate. Risk score: 97 (Critical).",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-regulatory-filer", "type": "component" }],
+            "subjects": [{ "subject-uuid": "0f6b07ea-e8b5-42ae-80c1-6fa290f68492", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-b4c5d6e7f8a9", "description": "Chronicle audit — unauthorized SUBMITTED blocked" }
             ]
           },
           {
-            "uuid": "obs-cs-004",
+            "uuid": "86e79dbd-d5a9-4a27-b070-73f3ebacb457",
             "description": "MAR Art.12 pattern detection: WASH_TRADING flagged for US0378331005 from trade-sentinel source. STR candidate created.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-trade-surveiller", "type": "component" }],
+            "subjects": [{ "subject-uuid": "72a79520-ed96-431d-91d3-6bc97945586b", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-f2a3b4c5d6e7", "description": "Chronicle audit — wash trading detection" }
             ]
           },
           {
-            "uuid": "obs-cs-005",
+            "uuid": "d942946c-73a8-4b8a-aa4e-6a177eaf19ef",
             "description": "DORA resilience check: all 4 agents operational, zero downtime, 100% audit trail completeness for assessment period.",
             "methods": ["AUTOMATED"],
             "subjects": [
-              { "subject-uuid": "comp-trade-surveiller", "type": "component" },
-              { "subject-uuid": "comp-breach-detector", "type": "component" },
-              { "subject-uuid": "comp-position-reporter", "type": "component" },
-              { "subject-uuid": "comp-regulatory-filer", "type": "component" }
+              { "subject-uuid": "72a79520-ed96-431d-91d3-6bc97945586b", "type": "component" },
+              { "subject-uuid": "3b77f06e-ab0a-4437-9249-70838434e7e5", "type": "component" },
+              { "subject-uuid": "8f3b0430-76bd-4d50-bfae-d015336df992", "type": "component" },
+              { "subject-uuid": "0f6b07ea-e8b5-42ae-80c1-6fa290f68492", "type": "component" }
             ],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:daily-resilience-check-20260320", "description": "Chronicle — daily DORA resilience verification" }

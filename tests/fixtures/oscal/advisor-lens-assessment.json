@@ -1,6 +1,6 @@
 {
   "assessment-results": {
-    "uuid": "ar-05e6f7a8-b9c0-1234-efab-234567890123",
+    "uuid": "b4348bb5-3224-4e18-aace-cfe5dde2be8b",
     "metadata": {
       "title": "AdvisorLens SOE Compliance Assessment",
       "last-modified": "2026-03-20T12:00:00.000Z",
@@ -12,12 +12,12 @@
       ],
       "parties": [
         {
-          "uuid": "party-assetco-advisory",
+          "uuid": "3239cbb6-2014-4f37-8df1-fcac63966580",
           "type": "organization",
           "name": "AssetCo Global Asset Management — Client Advisory"
         },
         {
-          "uuid": "party-sentinel-ops",
+          "uuid": "3502cb68-9b63-4b58-843a-5522584ec763",
           "type": "organization",
           "name": "YadriWorks Inc. — Sentinel-Ops"
         }
@@ -29,143 +29,143 @@
     "local-definitions": {
       "components": [
         {
-          "uuid": "comp-suitability-checker",
+          "uuid": "1bfe0446-3bdc-48b7-a087-f05a3f573fa7",
           "type": "software",
           "title": "suitability-checker agent",
           "description": "Evaluates investment suitability for clients. Read client profiles, write assessment results only.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/advisor-lens/suitability-checker.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/advisor-lens/suitability-checker.soe.json" }
           ]
         },
         {
-          "uuid": "comp-proposal-generator",
+          "uuid": "83e7587f-2217-44a2-b967-17e8c36228c6",
           "type": "software",
           "title": "proposal-generator agent",
           "description": "Generates investment proposals. Draft-only, Art.52 AI disclosure enforcement.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/advisor-lens/proposal-generator.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/advisor-lens/proposal-generator.soe.json" }
           ]
         },
         {
-          "uuid": "comp-client-reporter",
+          "uuid": "9b1fc184-e0e7-4b52-91b4-43937cbe38be",
           "type": "software",
           "title": "client-reporter agent",
           "description": "Generates client reports. Client isolation enforced — cannot access other clients' data.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/advisor-lens/client-reporter.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/advisor-lens/client-reporter.soe.json" }
           ]
         }
       ]
     },
     "results": [
       {
-        "uuid": "result-advisor-lens-20260320",
+        "uuid": "721a0d6d-640d-4aa3-91f3-cb679e1ef121",
         "title": "AdvisorLens Daily SOE Assessment — 2026-03-20",
         "description": "Automated assessment of SOE enforcement for all AdvisorLens agents",
         "start": "2026-03-20T00:00:00.000Z",
         "end": "2026-03-20T23:59:59.999Z",
         "findings": [
           {
-            "uuid": "finding-al-001",
+            "uuid": "53b69a00-d2f0-43dd-88f5-f506d35ea7da",
             "title": "Suitability Assessment — Compliant",
             "description": "suitability-checker evaluated C-1001 for EQUITY-GROWTH-FUND. MiFID II Art.25 suitability determination: suitable.",
             "target": {
               "type": "objective-id",
               "target-id": "mifid-ii-art25-suitability",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-al-001" }]
+            "related-observations": [{ "observation-uuid": "533208ed-2d91-4f6e-a118-fdda9fbf2e74" }]
           },
           {
-            "uuid": "finding-al-002",
+            "uuid": "e68df375-be5c-494d-9ea4-100e31ae0818",
             "title": "Art.52 AI Disclosure — Violation Blocked",
             "description": "proposal-generator attempted to write proposal P-2003 without AI disclosure statement. SOE blocked per EU AI Act Art.52.",
             "target": {
               "type": "objective-id",
               "target-id": "eu-ai-act-art52-transparency",
-              "status": { "state": "not-satisfied" }
+              "status": "not-satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-al-002" }]
+            "related-observations": [{ "observation-uuid": "c27e2afd-f9bf-4391-892f-3c4e9a64ed95" }]
           },
           {
-            "uuid": "finding-al-003",
+            "uuid": "39791b2c-7ad3-4f5e-b61a-8c05e7d12f34",
             "title": "Cross-Client Data Access — Blocked",
             "description": "client-reporter assigned to C-3001 attempted to read portfolios/C-3002. SOE enforced client isolation per GDPR Art.5(1)(f).",
             "target": {
               "type": "objective-id",
               "target-id": "gdpr-art5-integrity-confidentiality",
-              "status": { "state": "not-satisfied" }
+              "status": "not-satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-al-003" }]
+            "related-observations": [{ "observation-uuid": "a2b4c6d8-e0f1-4a5b-9c7d-3e8f0a1b2c4d" }]
           },
           {
-            "uuid": "finding-al-004",
+            "uuid": "5d7f9b1e-3a5c-4e8d-b0f2-6c4a8e2d0f13",
             "title": "GDPR Art.22 Automated Decision-Making — Compliant",
             "description": "All suitability recommendations flagged as AI-generated with human review gate. No fully automated individual decisions.",
             "target": {
               "type": "objective-id",
               "target-id": "gdpr-art22-automated-decisions",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-al-004" }]
+            "related-observations": [{ "observation-uuid": "b3c5d7e9-f1a2-4b6c-8d0e-4f9a1b3c5d7e" }]
           },
           {
-            "uuid": "finding-al-005",
+            "uuid": "7e0a2c4d-6f8b-4d1e-a3c5-8b7d9f1e3a5c",
             "title": "Fiduciary Duty — Compliant",
             "description": "All proposals include suitability rationale and conflict-of-interest disclosures. SEC Advisers Act compliance verified.",
             "target": {
               "type": "objective-id",
               "target-id": "sec-advisers-act-fiduciary",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-al-005" }]
+            "related-observations": [{ "observation-uuid": "c4d6e8f0-a1b3-4c5d-9e7f-5a0b2c4d6e8f" }]
           }
         ],
         "observations": [
           {
-            "uuid": "obs-al-001",
-            "description": "Suitability check for C-1001 × EQUITY-GROWTH-FUND: suitable. Risk score: 8 (Green). Assessment written to results/suitability/.",
+            "uuid": "533208ed-2d91-4f6e-a118-fdda9fbf2e74",
+            "description": "Suitability check for C-1001 x EQUITY-GROWTH-FUND: suitable. Risk score: 8 (Green). Assessment written to results/suitability/.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-suitability-checker", "type": "component" }],
+            "subjects": [{ "subject-uuid": "1bfe0446-3bdc-48b7-a087-f05a3f573fa7", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-c5d6e7f8a9b0", "description": "Chronicle audit — suitability assessment" }
             ]
           },
           {
-            "uuid": "obs-al-002",
+            "uuid": "c27e2afd-f9bf-4391-892f-3c4e9a64ed95",
             "description": "Art.52 enforcement: proposal P-2003 write blocked — art52DisclosureMissing: true. Risk score: 98 (Critical). Block-on-missing mode active.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-proposal-generator", "type": "component" }],
+            "subjects": [{ "subject-uuid": "83e7587f-2217-44a2-b967-17e8c36228c6", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-d6e7f8a9b0c1", "description": "Chronicle audit — Art.52 disclosure blocked" }
             ]
           },
           {
-            "uuid": "obs-al-003",
+            "uuid": "a2b4c6d8-e0f1-4a5b-9c7d-3e8f0a1b2c4d",
             "description": "Cross-client access blocked: client-reporter (assigned C-3001) attempted read of C-3002 portfolio. Risk score: 98 (Critical). GDPR breach assessment triggered.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-client-reporter", "type": "component" }],
+            "subjects": [{ "subject-uuid": "9b1fc184-e0e7-4b52-91b4-43937cbe38be", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-e7f8a9b0c1d2", "description": "Chronicle audit — cross-client access blocked" }
             ]
           },
           {
-            "uuid": "obs-al-004",
+            "uuid": "b3c5d7e9-f1a2-4b6c-8d0e-4f9a1b3c5d7e",
             "description": "GDPR Art.22 compliance: 15 suitability recommendations generated, all flagged as AI-generated, all routed through human review. Zero fully-automated decisions.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-suitability-checker", "type": "component" }],
+            "subjects": [{ "subject-uuid": "1bfe0446-3bdc-48b7-a087-f05a3f573fa7", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:daily-art22-check-20260320", "description": "Chronicle — daily Art.22 compliance verification" }
             ]
           },
           {
-            "uuid": "obs-al-005",
+            "uuid": "c4d6e8f0-a1b3-4c5d-9e7f-5a0b2c4d6e8f",
             "description": "Fiduciary duty verification: 8 proposals generated, all include suitability rationale and COI disclosures. SEC Advisers Act Rule 204-2 compliant.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-proposal-generator", "type": "component" }],
+            "subjects": [{ "subject-uuid": "83e7587f-2217-44a2-b967-17e8c36228c6", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:daily-fiduciary-check-20260320", "description": "Chronicle — daily fiduciary duty verification" }
             ]

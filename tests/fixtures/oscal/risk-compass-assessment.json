@@ -1,6 +1,6 @@
 {
   "assessment-results": {
-    "uuid": "ar-01a2b3c4-d5e6-7890-abcd-ef0123456789",
+    "uuid": "b8d474dc-acc9-49e1-97f5-ef16b73ae9f7",
     "metadata": {
       "title": "RiskCompass SOE Compliance Assessment",
       "last-modified": "2026-03-20T12:00:00.000Z",
@@ -12,12 +12,12 @@
       ],
       "parties": [
         {
-          "uuid": "party-assetco-risk",
+          "uuid": "256e7e46-20b7-4e3d-8bff-796853c728e6",
           "type": "organization",
           "name": "AssetCo Global Asset Management — Risk Division"
         },
         {
-          "uuid": "party-sentinel-ops",
+          "uuid": "cfd462d0-bb2b-4dd8-b719-306d98143608",
           "type": "organization",
           "name": "YadriWorks Inc. — Sentinel-Ops"
         }
@@ -29,153 +29,153 @@
     "local-definitions": {
       "components": [
         {
-          "uuid": "comp-var-calculator",
+          "uuid": "56c87477-bdbd-4a35-995c-1b70932f00f5",
           "type": "software",
           "title": "var-calculator agent",
           "description": "Computes Value-at-Risk across portfolios. Read-only analytics agent.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/risk-compass/var-calculator.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/risk-compass/var-calculator.soe.json" }
           ]
         },
         {
-          "uuid": "comp-stress-tester",
+          "uuid": "a26a3464-3468-4aa4-a756-a23eb326bc21",
           "type": "software",
           "title": "stress-tester agent",
           "description": "Runs stress test scenarios. Read-only access to positions and market data.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/risk-compass/stress-tester.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/risk-compass/stress-tester.soe.json" }
           ]
         },
         {
-          "uuid": "comp-exposure-monitor",
+          "uuid": "2c849b0a-d06c-4967-bea3-ccac415ff1ab",
           "type": "software",
           "title": "exposure-monitor agent",
           "description": "Monitors cross-fund exposure concentrations. Broadest read access, zero write.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/risk-compass/exposure-monitor.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/risk-compass/exposure-monitor.soe.json" }
           ]
         },
         {
-          "uuid": "comp-limit-enforcer",
+          "uuid": "9c1ea268-f3c0-412d-b9c9-e6529d2f273b",
           "type": "software",
           "title": "limit-enforcer agent",
           "description": "Enforces risk limits. Can write breach alerts but cannot modify limits.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/risk-compass/limit-enforcer.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/risk-compass/limit-enforcer.soe.json" }
           ]
         }
       ]
     },
     "results": [
       {
-        "uuid": "result-risk-compass-20260320",
+        "uuid": "69b35ee6-b7d7-4010-86df-f8b220957c41",
         "title": "RiskCompass Daily SOE Assessment — 2026-03-20",
         "description": "Automated assessment of SOE enforcement for all RiskCompass agents",
         "start": "2026-03-20T00:00:00.000Z",
         "end": "2026-03-20T23:59:59.999Z",
         "findings": [
           {
-            "uuid": "finding-rc-001",
+            "uuid": "c7af7db8-db11-4987-989b-7d4e3172fde7",
             "title": "Basel III/IV VaR Computation — Compliant",
             "description": "var-calculator agent computed portfolio VaR within SOE boundaries. Read-only access to positions/market-data verified.",
             "target": {
               "type": "objective-id",
               "target-id": "basel-iii-var-computation",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-rc-001" }]
+            "related-observations": [{ "observation-uuid": "21a6b7b8-3c0b-4e7c-88d2-006efc4256a0" }]
           },
           {
-            "uuid": "finding-rc-002",
+            "uuid": "8abce73c-4d5f-4d0e-b1cb-f953515d14c0",
             "title": "Risk Limit Write Attempt — Blocked",
             "description": "limit-enforcer attempted to write to risk-limits/active/ directory. SOE denied — agents can write breach alerts but not modify limits themselves.",
             "target": {
               "type": "objective-id",
               "target-id": "basel-iv-limit-integrity",
-              "status": { "state": "not-satisfied" }
+              "status": "not-satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-rc-002" }]
+            "related-observations": [{ "observation-uuid": "93680f4e-a0fe-4e41-8b98-4e63429b667e" }]
           },
           {
-            "uuid": "finding-rc-003",
+            "uuid": "310989b7-1f84-4fcc-b54d-c872aa7bcc94",
             "title": "Stress Test Execution — Compliant",
             "description": "stress-tester ran CCAR/DFAST scenarios with read-only access. No write attempts detected.",
             "target": {
               "type": "objective-id",
               "target-id": "dodd-frank-stress-testing",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-rc-003" }]
+            "related-observations": [{ "observation-uuid": "22ba6b47-c193-4b89-83c2-882ab71fcb48" }]
           },
           {
-            "uuid": "finding-rc-004",
+            "uuid": "460ff328-62df-47a6-9f0a-6ece16d8c11b",
             "title": "Cross-Fund Exposure Monitoring — Compliant",
             "description": "exposure-monitor read positions across all funds. Broadest read access verified within SOE bounds. Zero write operations.",
             "target": {
               "type": "objective-id",
               "target-id": "aifmd-exposure-monitoring",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-rc-004" }]
+            "related-observations": [{ "observation-uuid": "eeb3b35a-af7c-4bcd-abba-a8a9e6f64a3b" }]
           },
           {
-            "uuid": "finding-rc-005",
+            "uuid": "d5336b14-8b49-4745-932a-538d6f05cb0f",
             "title": "EU AI Act Art.14 Human Oversight — Compliant",
             "description": "All risk model outputs flagged as AI-generated. Human review gate enforced before risk limit changes take effect.",
             "target": {
               "type": "objective-id",
               "target-id": "eu-ai-act-art14-human-oversight",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-rc-005" }]
+            "related-observations": [{ "observation-uuid": "78f9f6db-2f26-456c-80da-458ce0912501" }]
           }
         ],
         "observations": [
           {
-            "uuid": "obs-rc-001",
+            "uuid": "21a6b7b8-3c0b-4e7c-88d2-006efc4256a0",
             "description": "VaR computation completed for 12 portfolios. Risk scores: Green (8/12), Yellow (3/12), Red (1/12). All within SOE risk budget.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-var-calculator", "type": "component" }],
+            "subjects": [{ "subject-uuid": "56c87477-bdbd-4a35-995c-1b70932f00f5", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-c3d4e5f6a7b8", "description": "Chronicle audit record — VaR computation batch" }
             ]
           },
           {
-            "uuid": "obs-rc-002",
+            "uuid": "93680f4e-a0fe-4e41-8b98-4e63429b667e",
             "description": "limit-enforcer attempted write to risk-limits/active/GROWTH-EQUITY. SOE gate denied with riskScore 95. Violation logged to Chronicle.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-limit-enforcer", "type": "component" }],
+            "subjects": [{ "subject-uuid": "9c1ea268-f3c0-412d-b9c9-e6529d2f273b", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-d4e5f6a7b8c9", "description": "Chronicle audit record — limit write blocked" }
             ]
           },
           {
-            "uuid": "obs-rc-003",
+            "uuid": "22ba6b47-c193-4b89-83c2-882ab71fcb48",
             "description": "CCAR stress test completed: 8 scenarios, 4 portfolios. All read-only. Worst-case drawdown: -18.3% (within acceptable range).",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-stress-tester", "type": "component" }],
+            "subjects": [{ "subject-uuid": "a26a3464-3468-4aa4-a756-a23eb326bc21", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-e5f6a7b8c9d0", "description": "Chronicle audit record — stress test execution" }
             ]
           },
           {
-            "uuid": "obs-rc-004",
+            "uuid": "eeb3b35a-af7c-4bcd-abba-a8a9e6f64a3b",
             "description": "Cross-fund exposure scan: 5 funds, 340 positions. No concentration breaches detected. Exposure data read-only.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-exposure-monitor", "type": "component" }],
+            "subjects": [{ "subject-uuid": "2c849b0a-d06c-4967-bea3-ccac415ff1ab", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-f6a7b8c9d0e1", "description": "Chronicle audit record — exposure monitoring scan" }
             ]
           },
           {
-            "uuid": "obs-rc-005",
+            "uuid": "78f9f6db-2f26-456c-80da-458ce0912501",
             "description": "Human oversight gate enforced on 3 risk limit change proposals. All required RISK_LIMIT_CHANGE_APPROVED event before proceeding.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-limit-enforcer", "type": "component" }],
+            "subjects": [{ "subject-uuid": "9c1ea268-f3c0-412d-b9c9-e6529d2f273b", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-a7b8c9d0e1f2", "description": "Chronicle audit record — human oversight gate enforcement" }
             ]

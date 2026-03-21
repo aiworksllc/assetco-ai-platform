@@ -1,6 +1,6 @@
 {
   "assessment-results": {
-    "uuid": "ar-06f7a8b9-c0d1-2345-fabc-345678901234",
+    "uuid": "f4a6b8c0-d2e4-4f68-9a1b-3c5d7e9f0a2b",
     "metadata": {
       "title": "OpsFabric SOE Compliance Assessment",
       "last-modified": "2026-03-20T12:00:00.000Z",
@@ -12,12 +12,12 @@
       ],
       "parties": [
         {
-          "uuid": "party-assetco-ops",
+          "uuid": "a1c3e5f7-b2d4-4a6c-8e0f-1a3b5c7d9e0f",
           "type": "organization",
           "name": "AssetCo Global Asset Management — Operations"
         },
         {
-          "uuid": "party-sentinel-ops",
+          "uuid": "b2d4e6f8-c3e5-4b7d-9f1a-2b4c6d8e0f1a",
           "type": "organization",
           "name": "YadriWorks Inc. — Sentinel-Ops"
         }
@@ -29,103 +29,103 @@
     "local-definitions": {
       "components": [
         {
-          "uuid": "comp-settlement-processor",
+          "uuid": "c3e5f7a9-d4f6-4c8e-a0b2-3c5d7e9f1a2b",
           "type": "software",
           "title": "settlement-processor agent",
           "description": "Processes settlement batches. Tracks T+1/T+2 deadlines per CSDR.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "LIMITED" },
-            { "name": "soe-definition", "value": "soe-definitions/ops-fabric/settlement-processor.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "LIMITED" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/ops-fabric/settlement-processor.soe.json" }
           ]
         },
         {
-          "uuid": "comp-reconciler",
+          "uuid": "d4f6a8b0-e5a7-4d9f-b1c3-4d6e8f0a2b3c",
           "type": "software",
           "title": "reconciler agent",
           "description": "Reconciles positions across systems. Read positions, write to reconciliation/ only.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "LIMITED" },
-            { "name": "soe-definition", "value": "soe-definitions/ops-fabric/reconciler.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "LIMITED" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/ops-fabric/reconciler.soe.json" }
           ]
         },
         {
-          "uuid": "comp-nav-calculator",
+          "uuid": "e5a7b9c1-f6b8-4e0a-c2d4-5e7f9a1b3c4d",
           "type": "software",
           "title": "nav-calculator agent",
           "description": "Calculates fund NAV. Writes to nav/calculated/ only — nav/published/ requires dual approval.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "LIMITED" },
-            { "name": "soe-definition", "value": "soe-definitions/ops-fabric/nav-calculator.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "LIMITED" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/ops-fabric/nav-calculator.soe.json" }
           ]
         }
       ]
     },
     "results": [
       {
-        "uuid": "result-ops-fabric-20260320",
+        "uuid": "f6b8c0d2-a7c9-4f1b-d3e5-6f8a0b2c4d5e",
         "title": "OpsFabric Daily SOE Assessment — 2026-03-20",
         "description": "Automated assessment of SOE enforcement for all OpsFabric agents",
         "start": "2026-03-20T00:00:00.000Z",
         "end": "2026-03-20T23:59:59.999Z",
         "findings": [
           {
-            "uuid": "finding-of-001",
+            "uuid": "a7c9d1e3-b8d0-4a2c-e4f6-7a9b1c3d5e6f",
             "title": "Settlement Processing — Compliant",
             "description": "settlement-processor processed BATCH-20260320 (150 trades) within T+1 deadline. CSDR Art.7 settlement discipline maintained.",
             "target": {
               "type": "objective-id",
               "target-id": "csdr-art7-settlement-discipline",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-of-001" }]
+            "related-observations": [{ "observation-uuid": "d0e2f4a6-c1d3-4b5d-f7a9-8b0c2d4e6f7a" }]
           },
           {
-            "uuid": "finding-of-002",
+            "uuid": "b8d0e2f4-c9e1-4b3d-f5a7-8a0b2c4d6e7f",
             "title": "NAV Publication — Blocked",
             "description": "nav-calculator attempted to write directly to nav/published/FUND-001/. SOE blocked — publication requires dual approval per Investment Company Act Rule 22c-1.",
             "target": {
               "type": "objective-id",
               "target-id": "ica-rule22c1-nav-publication",
-              "status": { "state": "not-satisfied" }
+              "status": "not-satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-of-002" }]
+            "related-observations": [{ "observation-uuid": "e1f3a5b7-d2e4-4c6e-a8b0-9c1d3e5f7a8b" }]
           },
           {
-            "uuid": "finding-of-003",
+            "uuid": "c9e1f3a5-d0f2-4c4e-a6b8-9b1c3d5e7f8a",
             "title": "Position Reconciliation — Compliant",
             "description": "reconciler matched positions across 3 systems. Write confined to reconciliation/ directory as defined in SOE.",
             "target": {
               "type": "objective-id",
               "target-id": "emir-clearing-reconciliation",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-of-003" }]
+            "related-observations": [{ "observation-uuid": "f2a4b6c8-e3f5-4d7f-b9c1-0d2e4f6a8b9c" }]
           }
         ],
         "observations": [
           {
-            "uuid": "obs-of-001",
+            "uuid": "d0e2f4a6-c1d3-4b5d-f7a9-8b0c2d4e6f7a",
             "description": "BATCH-20260320: 150 trades processed, T+1 settlement cycle. Zero settlement fails. Risk score: 12 (Green).",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-settlement-processor", "type": "component" }],
+            "subjects": [{ "subject-uuid": "c3e5f7a9-d4f6-4c8e-a0b2-3c5d7e9f1a2b", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-d4e5f6a7b8c9", "description": "Chronicle audit — settlement batch" }
             ]
           },
           {
-            "uuid": "obs-of-002",
+            "uuid": "e1f3a5b7-d2e4-4c6e-a8b0-9c1d3e5f7a8b",
             "description": "NAV publish blocked: nav-calculator tried to write nav/published/FUND-001/2026-03-20. Dual approval required. Risk score: 95 (Critical).",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-nav-calculator", "type": "component" }],
+            "subjects": [{ "subject-uuid": "e5a7b9c1-f6b8-4e0a-c2d4-5e7f9a1b3c4d", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-e5f6a7b8c9d0", "description": "Chronicle audit — NAV publish blocked" }
             ]
           },
           {
-            "uuid": "obs-of-003",
+            "uuid": "f2a4b6c8-e3f5-4d7f-b9c1-0d2e4f6a8b9c",
             "description": "Position reconciliation: 3 systems reconciled (internal positions, custodian, clearing house). 2 breaks identified, auto-matched. Write to reconciliation/2026-03-20/.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-reconciler", "type": "component" }],
+            "subjects": [{ "subject-uuid": "d4f6a8b0-e5a7-4d9f-b1c3-4d6e8f0a2b3c", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-f6a7b8c9d0e1", "description": "Chronicle audit — position reconciliation" }
             ]

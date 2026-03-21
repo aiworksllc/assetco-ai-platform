@@ -1,6 +1,6 @@
 {
   "assessment-results": {
-    "uuid": "ar-03c4d5e6-f7a8-9012-cdef-012345678901",
+    "uuid": "2d52aade-8d3c-419c-9de2-1da84c783697",
     "metadata": {
       "title": "TradeSentinel SOE Compliance Assessment",
       "last-modified": "2026-03-20T12:00:00.000Z",
@@ -12,12 +12,12 @@
       ],
       "parties": [
         {
-          "uuid": "party-assetco-trading",
+          "uuid": "9d77085a-ae80-4217-af9d-d8b3eec00287",
           "type": "organization",
           "name": "AssetCo Global Asset Management — Trading Desk"
         },
         {
-          "uuid": "party-sentinel-ops",
+          "uuid": "149c61a9-d136-49f4-acb8-6f94c5083d64",
           "type": "organization",
           "name": "YadriWorks Inc. — Sentinel-Ops"
         }
@@ -29,126 +29,126 @@
     "local-definitions": {
       "components": [
         {
-          "uuid": "comp-order-router",
+          "uuid": "4eba305e-fb48-43ad-889b-48a8a1e2f439",
           "type": "software",
           "title": "order-router agent",
           "description": "Routes orders to execution venues. Enforces best execution obligations.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/trade-sentinel/order-router.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/trade-sentinel/order-router.soe.json" }
           ]
         },
         {
-          "uuid": "comp-execution-monitor",
+          "uuid": "3764e2b1-09ca-4057-ae56-8fde68e24575",
           "type": "software",
           "title": "execution-monitor agent",
           "description": "Monitors execution quality. Creates STR drafts for suspicious patterns.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/trade-sentinel/execution-monitor.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/trade-sentinel/execution-monitor.soe.json" }
           ]
         },
         {
-          "uuid": "comp-tca-analyzer",
+          "uuid": "1c724736-5a9e-443b-a003-d69a0b6bfb0f",
           "type": "software",
           "title": "tca-analyzer agent",
           "description": "Transaction cost analysis. Read-only analytics agent.",
           "props": [
-            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
-            { "name": "soe-definition", "value": "soe-definitions/trade-sentinel/tca-analyzer.soe.json" }
+            { "name": "eu-ai-act-risk-class", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "ns": "https://yadriworks.ai/ns/sentinel-ops", "value": "soe-definitions/trade-sentinel/tca-analyzer.soe.json" }
           ]
         }
       ]
     },
     "results": [
       {
-        "uuid": "result-trade-sentinel-20260320",
+        "uuid": "882c42f1-da2c-4823-b0a3-eca55959e082",
         "title": "TradeSentinel Daily SOE Assessment — 2026-03-20",
         "description": "Automated assessment of SOE enforcement for all TradeSentinel agents",
         "start": "2026-03-20T00:00:00.000Z",
         "end": "2026-03-20T23:59:59.999Z",
         "findings": [
           {
-            "uuid": "finding-ts-001",
+            "uuid": "321ace6e-6276-414a-abe3-363ee1091835",
             "title": "Best Execution — Order Staged Compliant",
             "description": "order-router staged order ORD-2026-0320-001 via FlexTrade. MiFID II Art.27 best execution compliance verified.",
             "target": {
               "type": "objective-id",
               "target-id": "mifid-ii-art27-best-execution",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-ts-001" }]
+            "related-observations": [{ "observation-uuid": "6be56403-1d08-402b-aa02-e2936428c8b7" }]
           },
           {
-            "uuid": "finding-ts-002",
+            "uuid": "dbe26471-bab7-4be7-9c60-33cc93bb7e8c",
             "title": "NBBO Trade-Through — Blocked",
             "description": "order-router attempted to execute TSLA at $142.50 outside NBBO. SOE blocked per Reg NMS Rule 611.",
             "target": {
               "type": "objective-id",
               "target-id": "reg-nms-rule611-trade-through",
-              "status": { "state": "not-satisfied" }
+              "status": "not-satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-ts-002" }]
+            "related-observations": [{ "observation-uuid": "39e70c89-26ac-4af5-8cb3-62c79eeb4ed7" }]
           },
           {
-            "uuid": "finding-ts-003",
+            "uuid": "cb9fde37-3931-4c47-9a56-fbff970bc3ff",
             "title": "MAR Spoofing Pattern — STR Draft Created",
             "description": "execution-monitor detected spoofing pattern in orders ORD-007, ORD-008. STR draft created per MAR Art.16 filing obligation.",
             "target": {
               "type": "objective-id",
               "target-id": "mar-art16-str-filing",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-ts-003" }]
+            "related-observations": [{ "observation-uuid": "ce2984d6-108d-4ffb-8f38-e4ec4052f0ed" }]
           },
           {
-            "uuid": "finding-ts-004",
+            "uuid": "3a07182a-552d-492f-bf68-b27dd0ec11ae",
             "title": "Chinese Wall — Research Access Denied",
             "description": "TradeSentinel agents have no read access to research-nexus/pre-publication. Information barrier intact.",
             "target": {
               "type": "objective-id",
               "target-id": "mar-art10-information-barrier",
-              "status": { "state": "satisfied" }
+              "status": "satisfied"
             },
-            "related-observations": [{ "observation-uuid": "obs-ts-004" }]
+            "related-observations": [{ "observation-uuid": "aa48da9d-a842-45c8-b35e-d5445c7458ed" }]
           }
         ],
         "observations": [
           {
-            "uuid": "obs-ts-001",
+            "uuid": "6be56403-1d08-402b-aa02-e2936428c8b7",
             "description": "Order ORD-2026-0320-001 staged for AAPL, notional $200,000. Venue selection: FlexTrade (best execution rationale logged). Risk score: 8 (Green).",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-order-router", "type": "component" }],
+            "subjects": [{ "subject-uuid": "4eba305e-fb48-43ad-889b-48a8a1e2f439", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-c9d0e1f2a3b4", "description": "Chronicle audit — order staged" }
             ]
           },
           {
-            "uuid": "obs-ts-002",
+            "uuid": "39e70c89-26ac-4af5-8cb3-62c79eeb4ed7",
             "description": "NBBO violation blocked: TSLA price $142.50 outside national best bid/offer. Risk score: 58 (Yellow). Order ORD-2026-0320-003 rejected.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-order-router", "type": "component" }],
+            "subjects": [{ "subject-uuid": "4eba305e-fb48-43ad-889b-48a8a1e2f439", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-d0e1f2a3b4c5", "description": "Chronicle audit — NBBO block" }
             ]
           },
           {
-            "uuid": "obs-ts-003",
+            "uuid": "ce2984d6-108d-4ffb-8f38-e4ec4052f0ed",
             "description": "Spoofing pattern detected across ORD-007, ORD-008. STR draft ALT-007 created. Risk score: 47 (Yellow). Human review required before filing.",
             "methods": ["AUTOMATED"],
-            "subjects": [{ "subject-uuid": "comp-execution-monitor", "type": "component" }],
+            "subjects": [{ "subject-uuid": "3764e2b1-09ca-4057-ae56-8fde68e24575", "type": "component" }],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:aud-e1f2a3b4c5d6", "description": "Chronicle audit — STR draft created" }
             ]
           },
           {
-            "uuid": "obs-ts-004",
+            "uuid": "aa48da9d-a842-45c8-b35e-d5445c7458ed",
             "description": "Information barrier verification: 0 read attempts to research-nexus paths from any TradeSentinel agent. Chinese wall intact.",
             "methods": ["AUTOMATED"],
             "subjects": [
-              { "subject-uuid": "comp-order-router", "type": "component" },
-              { "subject-uuid": "comp-execution-monitor", "type": "component" },
-              { "subject-uuid": "comp-tca-analyzer", "type": "component" }
+              { "subject-uuid": "4eba305e-fb48-43ad-889b-48a8a1e2f439", "type": "component" },
+              { "subject-uuid": "3764e2b1-09ca-4057-ae56-8fde68e24575", "type": "component" },
+              { "subject-uuid": "1c724736-5a9e-443b-a003-d69a0b6bfb0f", "type": "component" }
             ],
             "relevant-evidence": [
               { "href": "urn:sentinel-ops:chronicle:daily-barrier-check-20260320", "description": "Chronicle — daily barrier verification" }
