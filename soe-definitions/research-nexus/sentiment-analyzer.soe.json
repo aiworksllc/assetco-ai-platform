@@ -1,0 +1,95 @@
+{
+  "agent": "sentiment-analyzer",
+  "application": "research-nexus",
+  "version": "1.0.0",
+  "inherits": ["research-nexus-base"],
+
+  "identity": {
+    "role": "SentimentAnalyst",
+    "allowedPersonas": ["sentiment-analyzer"],
+    "authorityLevel": "research-read-write-prepublication",
+    "environmentScope": ["research"]
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "data/news-feeds/**",
+      "data/social-media/**",
+      "data/analyst-consensus/**",
+      "data/market-data/prices/**",
+      "data/market-data/volume/**",
+      "research/published/**"
+    ],
+    "readDeny": [
+      "trading/**",
+      "orders/**",
+      "executions/**",
+      "positions/**",
+      "portfolios/model/**",
+      "data/market-data/orderflow/**",
+      "data/esg-providers/**"
+    ],
+    "writeAllow": [
+      "research/pre-publication/sentiment/**"
+    ],
+    "writeDeny": [
+      "research/published/**",
+      "compliance/**",
+      "portfolios/**",
+      "trading/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "python sentiment_analyzer.py *",
+        "python consensus_tracker.py *",
+        "python social_signal_processor.py *",
+        "curl https://stream.twitter.com/1.1/*",
+        "curl https://oauth.reddit.com/r/*"
+      ],
+      "deny": [
+        "curl *trading*",
+        "curl *positions*",
+        "curl *orders*",
+        "curl *bloomberg-oms*",
+        "rm -rf *"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "research/pre-publication/sentiment/**"
+      ],
+      "denyPaths": [
+        "research/published/**",
+        "compliance/**",
+        "trading/**",
+        "portfolios/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 400,
+    "perCallCost": {
+      "read": 1,
+      "write": 2,
+      "bash_execute": 3
+    },
+    "burstAllowance": 80,
+    "resetPeriod": "24h",
+    "freezeOnBreach": true
+  },
+
+  "classification": {
+    "dataClassification": "RESTRICTED",
+    "regulatoryFrameworks": ["SEC Rule 204-2", "Reg FD", "MAR Art.10"],
+    "euAiActRiskClass": "SIGNIFICANT",
+    "chineseWall": {
+      "barrierName": "research-trading-wall",
+      "violationSeverity": "CRITICAL",
+      "violationAction": "BLOCK_AND_ESCALATE"
+    }
+  }
+}

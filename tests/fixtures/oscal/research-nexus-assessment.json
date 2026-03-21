@@ -1,0 +1,197 @@
+{
+  "assessment-results": {
+    "uuid": "ar-07a8b9c0-d1e2-3456-abcd-456789012345",
+    "metadata": {
+      "title": "ResearchNexus SOE Compliance Assessment",
+      "last-modified": "2026-03-20T12:00:00.000Z",
+      "version": "1.0.0",
+      "oscal-version": "1.1.2",
+      "roles": [
+        { "id": "assessor", "title": "Sentinel-Ops SOE Engine" },
+        { "id": "system-owner", "title": "AssetCo Research Division" }
+      ],
+      "parties": [
+        {
+          "uuid": "party-assetco-research",
+          "type": "organization",
+          "name": "AssetCo Global Asset Management — Research Division"
+        },
+        {
+          "uuid": "party-sentinel-ops",
+          "type": "organization",
+          "name": "YadriWorks Inc. — Sentinel-Ops"
+        }
+      ]
+    },
+    "import-ap": {
+      "href": "urn:sentinel-ops:assessment-plan:research-nexus"
+    },
+    "local-definitions": {
+      "components": [
+        {
+          "uuid": "comp-market-analyst",
+          "type": "software",
+          "title": "market-analyst agent",
+          "description": "SEC filing and earnings analysis. Pre-publication write only. Chinese wall enforced.",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "value": "soe-definitions/research-nexus/market-analyst.soe.json" }
+          ]
+        },
+        {
+          "uuid": "comp-esg-scorer",
+          "type": "software",
+          "title": "esg-scorer agent",
+          "description": "PAI computation and SFDR disclosure. Dual environment scope (research + compliance).",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "value": "soe-definitions/research-nexus/esg-scorer.soe.json" }
+          ]
+        },
+        {
+          "uuid": "comp-sentiment-analyzer",
+          "type": "software",
+          "title": "sentiment-analyzer agent",
+          "description": "News and social media sentiment analysis. Order flow access explicitly denied.",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "value": "soe-definitions/research-nexus/sentiment-analyzer.soe.json" }
+          ]
+        },
+        {
+          "uuid": "comp-fair-value-modeler",
+          "type": "software",
+          "title": "fair-value-modeler agent",
+          "description": "Level 2/3 fair value estimation. NAV and accounting writes explicitly denied.",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "SIGNIFICANT" },
+            { "name": "soe-definition", "value": "soe-definitions/research-nexus/fair-value-modeler.soe.json" }
+          ]
+        }
+      ]
+    },
+    "results": [
+      {
+        "uuid": "result-research-nexus-20260320",
+        "title": "ResearchNexus Daily SOE Assessment — 2026-03-20",
+        "description": "Automated assessment of SOE enforcement for all ResearchNexus agents",
+        "start": "2026-03-20T00:00:00.000Z",
+        "end": "2026-03-20T23:59:59.999Z",
+        "findings": [
+          {
+            "uuid": "finding-rn-001",
+            "title": "Chinese Wall Violation — Blocked",
+            "description": "market-analyst attempted to read positions/equity-book/long-positions.json. SOE enforced MAR Art.10 information barrier. Deny source: research-nexus-base inherited policy.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "mar-art10-information-barrier",
+              "status": { "state": "not-satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-rn-001" }]
+          },
+          {
+            "uuid": "finding-rn-002",
+            "title": "SFDR Art.8 Disclosure — Compliant",
+            "description": "esg-scorer computed PAI indicators for FUND-001 with 92% data coverage and wrote SFDR Art.8 disclosure to compliance/sfdr/.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "sfdr-art8-disclosure",
+              "status": { "state": "satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-rn-002" }]
+          },
+          {
+            "uuid": "finding-rn-003",
+            "title": "NAV Write Attempt — Blocked",
+            "description": "fair-value-modeler attempted to write to portfolios/nav/FUND-001/. SOE blocked — NAV publication requires dual approval per Investment Company Act Rule 22c-1.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "ica-rule22c1-nav-publication",
+              "status": { "state": "not-satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-rn-003" }]
+          },
+          {
+            "uuid": "finding-rn-004",
+            "title": "Pre-Publication Controls — Intact",
+            "description": "All 4 ResearchNexus agents wrote exclusively to research/pre-publication/ subdirectories. No leakage to published/ or downstream-accessible paths detected.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "reg-fd-fair-disclosure",
+              "status": { "state": "satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-rn-004" }]
+          },
+          {
+            "uuid": "finding-rn-005",
+            "title": "EU AI Act Art.12 Traceability — Compliant",
+            "description": "All research outputs tagged with generating agent, model version, and session ID. Full input-to-output chain reconstructable from Chronicle audit trail.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "eu-ai-act-art12-traceability",
+              "status": { "state": "satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-rn-005" }]
+          }
+        ],
+        "observations": [
+          {
+            "uuid": "obs-rn-001",
+            "description": "Chinese wall violation: market-analyst tried to read positions/equity-book/long-positions.json. Blocked in <1ms by deterministic pre-filter. Risk score: 98 (Critical). Deny source: research-nexus-base.",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-market-analyst", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-a1b2c3d4e5f6", "description": "Chronicle audit — Chinese wall block" }
+            ]
+          },
+          {
+            "uuid": "obs-rn-002",
+            "description": "SFDR disclosure: FUND-001 Art.8 PAI computed with 92% indicator coverage from MSCI, Sustainalytics, CDP. Written to compliance/sfdr/. Risk score: 13 (Green).",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-esg-scorer", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-b2c3d4e5f6a7", "description": "Chronicle audit — SFDR disclosure" }
+            ]
+          },
+          {
+            "uuid": "obs-rn-003",
+            "description": "NAV write blocked: fair-value-modeler tried to write portfolios/nav/FUND-001/2026-03-20.json. Risk score: 98 (Critical). Agent suspended pending human review.",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-fair-value-modeler", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-c3d4e5f6a7b8", "description": "Chronicle audit — NAV write blocked" }
+            ]
+          },
+          {
+            "uuid": "obs-rn-004",
+            "description": "Pre-publication control verification: 47 write operations across 4 agents, all to research/pre-publication/ subdirectories. Zero writes to research/published/ or other downstream paths.",
+            "methods": ["AUTOMATED"],
+            "subjects": [
+              { "subject-uuid": "comp-market-analyst", "type": "component" },
+              { "subject-uuid": "comp-esg-scorer", "type": "component" },
+              { "subject-uuid": "comp-sentiment-analyzer", "type": "component" },
+              { "subject-uuid": "comp-fair-value-modeler", "type": "component" }
+            ],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:daily-prepub-check-20260320", "description": "Chronicle — daily pre-publication control verification" }
+            ]
+          },
+          {
+            "uuid": "obs-rn-005",
+            "description": "Traceability verification: all research outputs include agentId, modelVersion, sessionId metadata. Chronicle audit chain intact for all 4 agents.",
+            "methods": ["AUTOMATED"],
+            "subjects": [
+              { "subject-uuid": "comp-market-analyst", "type": "component" },
+              { "subject-uuid": "comp-esg-scorer", "type": "component" },
+              { "subject-uuid": "comp-sentiment-analyzer", "type": "component" },
+              { "subject-uuid": "comp-fair-value-modeler", "type": "component" }
+            ],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:daily-traceability-check-20260320", "description": "Chronicle — daily traceability verification" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

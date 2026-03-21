@@ -1,0 +1,118 @@
+{
+  "id": "opsfabric-settlement-processor",
+  "version": "1.0.0",
+  "description": "SOE for settlement-processor agent. Generates and submits settlement instructions to custodians and CCPs. Monitors settlement fails and escalates per CSDR thresholds.",
+  "identity": {
+    "agentName": "settlement-processor",
+    "application": "OpsFabric",
+    "role": "SettlementOperations",
+    "allowedPersonas": ["settlement-processor"],
+    "authorityLevel": "settlement-instruction-only",
+    "environmentScope": ["production"],
+    "euAiActClass": "LIMITED",
+    "humanSupervisor": "maria.torres@assetco.com"
+  },
+  "dataAccess": {
+    "readAllow": [
+      "operations/trades/executed/**",
+      "operations/settlement/ssi-database/**",
+      "operations/settlement/ccp-membership/**",
+      "operations/settlement/custodian-connectivity/**",
+      "operations/settlement/status/**",
+      "operations/corporate-actions/elections/**"
+    ],
+    "readDeny": [
+      "**/client-pii/**",
+      "**/client-accounts/**",
+      "research/**",
+      "risk-models/**",
+      "alpha-engine/**",
+      "operations/nav/**",
+      "operations/reconciliation/**",
+      "trading/**"
+    ],
+    "writeAllow": [
+      "operations/settlement/instructions/**",
+      "operations/settlement/status/**",
+      "operations/settlement/fails/**",
+      "operations/settlement/penalties/**"
+    ],
+    "writeDeny": [
+      "operations/positions/**",
+      "operations/nav/**",
+      "operations/reconciliation/**",
+      "trading/**",
+      "eagle-pace/**",
+      "custodian-records/**"
+    ]
+  },
+  "toolActions": {
+    "custodianApi": {
+      "allow": [
+        "bny-mellon/settlement/submit-instruction",
+        "bny-mellon/settlement/query-status",
+        "state-street/settlement/submit-instruction",
+        "state-street/settlement/query-status",
+        "dtcc/settlement/submit",
+        "dtcc/settlement/query"
+      ],
+      "deny": [
+        "bny-mellon/custody/amend-position",
+        "bny-mellon/custody/delete-*",
+        "state-street/custody/amend-position",
+        "state-street/custody/**amend**",
+        "**/account-management/**",
+        "**/client-instruction/**"
+      ]
+    },
+    "ccpApi": {
+      "allow": [
+        "lch/clearing/submit-novation",
+        "lch/clearing/query-status",
+        "cme/clearing/submit-novation",
+        "cme/clearing/query-status"
+      ],
+      "deny": [
+        "lch/clearing/cancel-*",
+        "cme/clearing/cancel-*",
+        "**/margin-call/**",
+        "**/default-management/**"
+      ]
+    },
+    "bash": {
+      "allow": [
+        "swift-message-validate *",
+        "generate-mt54x --trade-id *",
+        "query-ssi-database --counterparty *",
+        "calculate-csdr-penalty --isin *"
+      ],
+      "deny": [
+        "rm *",
+        "DROP *",
+        "**/delete/**",
+        "amend-trade *",
+        "cancel-trade *"
+      ]
+    },
+    "edit": { "allowPaths": [], "denyPaths": ["**"] }
+  },
+  "riskBudget": {
+    "dailyLimit": 800,
+    "hourlyLimit": 100,
+    "onDemandBurst": 30,
+    "resetSchedule": "daily-at-midnight-ET",
+    "escalateAt": 700,
+    "hardLimitAction": "DENY_AND_ESCALATE"
+  },
+  "rateLimiting": {
+    "backend": "HotCache",
+    "windowSeconds": 300,
+    "maxCallsPerWindow": 100
+  },
+  "settlementDeadlineMonitoring": {
+    "enabled": true,
+    "t1CutoffET": "21:00",
+    "escalateMinutesBefore": 60,
+    "escalationTarget": "operations-team-slack-channel"
+  }
+}

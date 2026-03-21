@@ -1,0 +1,140 @@
+{
+  "agentId": "trade-sentinel/order-router",
+  "version": "1.2.0",
+  "application": "TradeSentinel",
+  "classification": "HIGH_RISK",
+  "regulatoryFrameworks": ["MIFID_II_ART27", "REG_NMS_RULE_611", "MAR_ART12", "EU_AI_ACT_ART14"],
+  "euAiActCategory": "ANNEX_III_HIGH_RISK",
+
+  "identity": {
+    "role": "ExecutionTrader",
+    "authorityLevel": "order-routing-only",
+    "environmentScope": ["production", "uat"],
+    "fiduciaryNote": "order-router stages orders for execution via FlexTrade EMS. Write access restricted to staging directory. Orders above EUR 500K require human approval."
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "trading/orders/incoming/**",
+      "trading/orders/staged/**",
+      "trading/mandates/**",
+      "trading/restricted-securities/**",
+      "market-data/live/**",
+      "market-data/quotes/**",
+      "market-data/order-book/**",
+      "venue-data/fee-schedules/**",
+      "venue-data/connectivity-status/**",
+      "venue-data/historical-fill-stats/**",
+      "positions/current/**",
+      "risk-compass/exposure-limits/**",
+      "research-nexus/published/reports/**",
+      "research-nexus/published/esg-scores/published/**"
+    ],
+    "readDeny": [
+      "research-nexus/pre-publication/**",
+      "research-nexus/draft/**",
+      "research-nexus/analyst-workspace/**",
+      "research-nexus/pending-approval/**",
+      "research-nexus/staging/**",
+      "client-data/pii/**",
+      "client-data/kyc/**",
+      "client-data/contact/**",
+      "deal-room/**",
+      "m-and-a/**",
+      "corporate-actions/unpublished/**",
+      "alpha-engine/internal-signals/**",
+      "alpha-engine/model-weights/**",
+      "trading/orders/active/**",
+      "trading/orders/cancelled/**",
+      "compliance/reports/**",
+      "audit/**"
+    ],
+    "writeAllow": [
+      "trading/orders/staged/**"
+    ],
+    "writeDeny": [
+      "trading/orders/active/**",
+      "trading/orders/executed/**",
+      "trading/orders/cancelled/**",
+      "positions/**",
+      "client-data/**",
+      "compliance/**",
+      "audit/**",
+      "research-nexus/**",
+      "risk-compass/**",
+      "alpha-engine/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "flexTrade submit-order --staged-id *",
+        "flexTrade cancel-staged --staged-id *",
+        "bloomberg aim-read --trade-list *",
+        "bloomberg bpipe-quote --instrument *",
+        "bloomberg bpipe-depth --instrument * --venue *",
+        "riskcompass check-exposure --instrument * --quantity *",
+        "nbbo-validator validate --instrument * --price *"
+      ],
+      "deny": [
+        "flexTrade modify-active *",
+        "flexTrade cancel-active *",
+        "flexTrade submit-order --bypass-soe *",
+        "exchange-direct-access *",
+        "rm *",
+        "curl * research-nexus *",
+        "curl * client-data *",
+        "psql *",
+        "DROP *",
+        "DELETE *"
+      ]
+    },
+    "edit": {
+      "allowPaths": ["trading/orders/staged/**"],
+      "denyPaths": ["**"]
+    }
+  },
+
+  "humanOversight": {
+    "required": true,
+    "gates": [
+      {
+        "trigger": "order_notional_eur > 500000",
+        "action": "REQUIRE_HUMAN_APPROVAL",
+        "approvalChannel": "bloomberg-aim-approval-workflow"
+      },
+      {
+        "trigger": "instrument_on_restricted_list",
+        "action": "BLOCK_AND_ESCALATE"
+      }
+    ]
+  },
+
+  "riskBudget": {
+    "dailyLimit": 1000,
+    "perActionCost": {
+      "order_staged": 1,
+      "order_submitted_under_100k": 2,
+      "order_submitted_100k_to_1m": 5,
+      "order_submitted_over_1m": 10,
+      "nbbo_violation_attempt": 50,
+      "mandate_check_fail": 30,
+      "chinese_wall_violation_attempt": 500
+    },
+    "freezeOnBreach": true,
+    "escalateAt": 800,
+    "resetCadence": "market-open"
+  },
+
+  "auditRequirements": {
+    "logLevel": "FULL",
+    "retentionYears": 7,
+    "immutable": true,
+    "requiredFields": [
+      "orderId", "instrument", "notional", "side",
+      "venueSelected", "venueSelectionRationale",
+      "nbboAtDecision", "arrivalPrice"
+    ]
+  }
+}

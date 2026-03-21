@@ -1,0 +1,132 @@
+[
+  {
+    "version": "0",
+    "id": "c9d0e1f2-a3b4-5678-cdef-789012345678",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T14:30:15.123Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/trade-sentinel/order-router"
+    ],
+    "detail": {
+      "recordId": "aud-c9d0e1f2a3b4",
+      "timestamp": "2026-03-20T14:30:15.123Z",
+      "agentId": "order-router",
+      "application": "trade-sentinel",
+      "model": "order-router-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "flexTrade submit-order --staged-id ORD-2026-0320-001",
+        "riskScore": 8,
+        "reason": null
+      },
+      "auditCategory": "order-execution",
+      "eventType": "order-staged",
+      "severity": "low",
+      "impactArea": "trading",
+      "compliance": [
+        {
+          "framework": "MiFID II",
+          "articles": [{ "ref": "Art.27", "status": "compliant", "scope": "best-execution" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "MiFID II (5yr) + FINRA 4511 (6yr) + buffer" },
+      "context": {
+        "orderId": "ORD-2026-0320-001",
+        "instrument": "AAPL",
+        "notional": 200000
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "d0e1f2a3-b4c5-6789-defa-890123456789",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T14:31:00.456Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/trade-sentinel/order-router"
+    ],
+    "detail": {
+      "recordId": "aud-d0e1f2a3b4c5",
+      "timestamp": "2026-03-20T14:31:00.456Z",
+      "agentId": "order-router",
+      "application": "trade-sentinel",
+      "model": "order-router-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "nbbo-validator validate --instrument TSLA --price 142.50",
+        "riskScore": 58,
+        "reason": "NBBO trade-through blocked — Reg NMS Rule 611"
+      },
+      "auditCategory": "best-execution-compliance",
+      "eventType": "nbbo-validation",
+      "severity": "high",
+      "impactArea": "regulatory-compliance",
+      "compliance": [
+        {
+          "framework": "Reg NMS",
+          "articles": [{ "ref": "Rule-611", "status": "violation-blocked", "scope": "trade-through-prohibition" }]
+        },
+        {
+          "framework": "MiFID II",
+          "articles": [{ "ref": "Art.27", "status": "best-execution-gate", "scope": "NBBO-validation" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "MiFID II Art.27(6): 5yr + buffer" },
+      "context": {
+        "nbboViolationAttempt": true,
+        "orderId": "ORD-2026-0320-003",
+        "instrument": "TSLA"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "e1f2a3b4-c5d6-7890-efab-901234567890",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T14:45:00.789Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/trade-sentinel/execution-monitor"
+    ],
+    "detail": {
+      "recordId": "aud-e1f2a3b4c5d6",
+      "timestamp": "2026-03-20T14:45:00.789Z",
+      "agentId": "execution-monitor",
+      "application": "trade-sentinel",
+      "model": "execution-monitor-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "compliance-shield create-str-draft --pattern SPOOFING --orders ORD-007,ORD-008",
+        "riskScore": 47,
+        "reason": null
+      },
+      "auditCategory": "market-abuse-alert",
+      "eventType": "str-draft-created",
+      "severity": "high",
+      "impactArea": "market-integrity",
+      "compliance": [
+        {
+          "framework": "MAR",
+          "articles": [
+            { "ref": "Art.12", "status": "pattern-detected", "scope": "SPOOFING" },
+            { "ref": "Art.16", "status": "str-draft-created", "scope": "filing-obligation" }
+          ]
+        }
+      ],
+      "retention": { "years": 7, "reason": "MAR Art.16: 5yr + FINRA buffer" },
+      "context": {
+        "strDraftCreated": true,
+        "marPatternType": "SPOOFING",
+        "alertId": "ALT-007"
+      }
+    }
+  }
+]

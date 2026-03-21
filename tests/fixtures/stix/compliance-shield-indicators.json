@@ -1,0 +1,102 @@
+{
+  "type": "bundle",
+  "id": "bundle--cs-04d5e6f7-a8b9-0123-defa-123456789012",
+  "spec_version": "2.1",
+  "created": "2026-03-20T12:00:00.000Z",
+  "modified": "2026-03-20T12:00:00.000Z",
+  "objects": [
+    {
+      "type": "identity",
+      "id": "identity--sentinel-ops-soe",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "name": "Sentinel-Ops SOE Engine",
+      "identity_class": "system",
+      "description": "YadriWorks Sentinel-Ops Safe Operating Envelope enforcement system"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--cs-wash-trading-detected",
+      "spec_version": "2.1",
+      "created": "2026-03-20T09:00:00.000Z",
+      "modified": "2026-03-20T09:00:00.000Z",
+      "name": "ComplianceShield Wash Trading Pattern — Detected",
+      "description": "trade-surveiller detected wash trading pattern for instrument US0378331005. FINRA 3110 supervisory system and MAR Art.12 market manipulation detection working correctly.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'trade-surveiller' AND x-soe-event:decision = 'allow' AND x-soe-event:context.pattern_type = 'WASH_TRADING']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T09:00:00.000Z",
+      "labels": ["soe:medium", "finra-3110", "mar-art12", "wash-trading", "surveillance"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--cs-info-barrier-crossing",
+      "spec_version": "2.1",
+      "created": "2026-03-20T09:05:00.000Z",
+      "modified": "2026-03-20T09:05:00.000Z",
+      "name": "ComplianceShield Information Barrier Crossing — Detected",
+      "description": "breach-detector detected alpha-engine/portfolio-optimizer crossing research-trading wall. SOX Section 302 and SEC Rule 17a-4 evidence logged.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'breach-detector' AND x-soe-event:event_type = 'barrier-crossing-detected' AND x-soe-event:context.barrier_name = 'research-trading-wall']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T09:05:00.000Z",
+      "labels": ["soe:critical", "sox-section302", "sec-17a-4", "information-barrier", "chinese-wall"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--cs-unauthorized-submitted",
+      "spec_version": "2.1",
+      "created": "2026-03-20T07:30:00.000Z",
+      "modified": "2026-03-20T07:30:00.000Z",
+      "name": "ComplianceShield Unauthorized SUBMITTED Status — Blocked",
+      "description": "regulatory-filer attempted SUBMITTED status on EMIR-TR filing. SOE blocked — SUBMITTED is human-only transition per SOX Section 404 internal controls.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'regulatory-filer' AND x-soe-event:decision = 'deny' AND x-soe-event:event_type = 'unauthorized-status-transition-blocked']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T07:30:00.000Z",
+      "labels": ["soe:critical", "sox-section404", "human-only-transition", "regulatory-filing", "emir"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "observed-data",
+      "id": "observed-data--cs-20260320",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "first_observed": "2026-03-20T00:00:00.000Z",
+      "last_observed": "2026-03-20T23:59:59.999Z",
+      "number_observed": 156,
+      "object_refs": [
+        "indicator--cs-wash-trading-detected",
+        "indicator--cs-info-barrier-crossing",
+        "indicator--cs-unauthorized-submitted"
+      ],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--cs-barrier-crossing-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--cs-info-barrier-crossing",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "Information barrier crossing detected by breach-detector — SOX/SEC evidence preserved"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--cs-submitted-blocked-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--cs-unauthorized-submitted",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "SOE gate blocked unauthorized SUBMITTED transition — SOX Section 404 internal controls enforced"
+    }
+  ]
+}

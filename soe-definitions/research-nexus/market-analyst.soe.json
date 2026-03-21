@@ -1,0 +1,100 @@
+{
+  "agent": "market-analyst",
+  "application": "research-nexus",
+  "version": "1.0.0",
+  "inherits": ["research-nexus-base"],
+
+  "identity": {
+    "role": "ResearchAnalyst",
+    "allowedPersonas": ["market-analyst"],
+    "authorityLevel": "research-read-write-prepublication",
+    "environmentScope": ["research"]
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "data/sec-edgar/**",
+      "data/earnings-transcripts/**",
+      "data/news-feeds/**",
+      "data/broker-research/**",
+      "research/published/**"
+    ],
+    "readDeny": [
+      "trading/**",
+      "orders/**",
+      "executions/**",
+      "positions/**",
+      "portfolios/model/**",
+      "data/esg-providers/**",
+      "data/esg-pai/**"
+    ],
+    "writeAllow": [
+      "research/pre-publication/analysis/**"
+    ],
+    "writeDeny": [
+      "research/published/**",
+      "compliance/**",
+      "portfolios/**",
+      "trading/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "python nlp_processor.py *",
+        "python transcript_parser.py *",
+        "python filing_analyzer.py *",
+        "curl https://efts.sec.gov/LATEST/search-index*",
+        "curl https://data.sec.gov/submissions/*"
+      ],
+      "deny": [
+        "curl *trading*",
+        "curl *positions*",
+        "curl *orders*",
+        "rm -rf *",
+        "curl *bloomberg-oms*",
+        "curl *flextrade*"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "research/pre-publication/analysis/**"
+      ],
+      "denyPaths": [
+        "research/published/**",
+        "compliance/**",
+        "trading/**",
+        "portfolios/**"
+      ]
+    },
+    "mcp_write": {
+      "allowPaths": [
+        "research/pre-publication/analysis/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 600,
+    "perCallCost": {
+      "read": 1,
+      "write": 2,
+      "bash_execute": 3
+    },
+    "burstAllowance": 100,
+    "resetPeriod": "24h",
+    "freezeOnBreach": true
+  },
+
+  "classification": {
+    "dataClassification": "RESTRICTED",
+    "regulatoryFrameworks": ["SEC Rule 204-2", "Reg FD", "MAR Art.10"],
+    "euAiActRiskClass": "SIGNIFICANT",
+    "chineseWall": {
+      "barrierName": "research-trading-wall",
+      "violationSeverity": "CRITICAL",
+      "violationAction": "BLOCK_AND_ESCALATE"
+    }
+  }
+}

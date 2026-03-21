@@ -1,0 +1,93 @@
+{
+  "agent": "esg-scorer",
+  "application": "research-nexus",
+  "version": "1.0.0",
+  "inherits": ["research-nexus-base"],
+
+  "identity": {
+    "role": "ESGAnalyst",
+    "allowedPersonas": ["esg-scorer"],
+    "authorityLevel": "esg-research-sfdr-writer",
+    "environmentScope": ["research", "compliance"]
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "data/esg-providers/msci/**",
+      "data/esg-providers/sustainalytics/**",
+      "data/esg-providers/cdp/**",
+      "data/sfdr-pai/**",
+      "portfolios/holdings/**",
+      "research/published/**"
+    ],
+    "readDeny": [
+      "trading/**",
+      "orders/**",
+      "executions/**",
+      "positions/**",
+      "portfolios/model/**"
+    ],
+    "writeAllow": [
+      "research/pre-publication/esg/**",
+      "compliance/sfdr/**"
+    ],
+    "writeDeny": [
+      "research/published/**",
+      "portfolios/**",
+      "trading/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "python esg_scorer.py *",
+        "python pai_calculator.py *",
+        "python taxonomy_mapper.py *",
+        "curl https://api.msci.com/esg/*",
+        "curl https://api.sustainalytics.com/*",
+        "curl https://api.cdp.net/*"
+      ],
+      "deny": [
+        "curl *trading*",
+        "curl *positions*",
+        "curl *orders*",
+        "rm -rf *"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "research/pre-publication/esg/**",
+        "compliance/sfdr/**"
+      ],
+      "denyPaths": [
+        "research/published/**",
+        "portfolios/**",
+        "trading/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 300,
+    "perCallCost": {
+      "read": 1,
+      "write": 2,
+      "bash_execute": 3,
+      "external_api_call": 4
+    },
+    "resetPeriod": "24h",
+    "freezeOnBreach": true
+  },
+
+  "classification": {
+    "dataClassification": "RESTRICTED",
+    "regulatoryFrameworks": ["SFDR Art.4/6/8/9", "EU Taxonomy", "SEC Rule 204-2", "MAR Art.10"],
+    "euAiActRiskClass": "SIGNIFICANT",
+    "chineseWall": {
+      "barrierName": "research-trading-wall",
+      "violationSeverity": "CRITICAL",
+      "violationAction": "BLOCK_AND_ESCALATE"
+    }
+  }
+}

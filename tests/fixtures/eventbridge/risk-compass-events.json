@@ -1,0 +1,133 @@
+[
+  {
+    "version": "0",
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef1234567890",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T14:30:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/risk-compass/var-calculator"
+    ],
+    "detail": {
+      "recordId": "aud-a1b2c3d4e5f6",
+      "timestamp": "2026-03-20T14:30:00.000Z",
+      "agentId": "var-calculator",
+      "application": "risk-compass",
+      "model": "var-calculator-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "var-engine compute --portfolio FUND-001 --method historical --confidence 99",
+        "riskScore": 15,
+        "reason": null
+      },
+      "auditCategory": "var-computation",
+      "eventType": "var-calculated",
+      "severity": "low",
+      "impactArea": "risk-analytics",
+      "compliance": [
+        {
+          "framework": "Basel III/IV",
+          "articles": [{ "ref": "CRR-Art.325", "status": "compliant", "scope": "market-risk-var" }]
+        },
+        {
+          "framework": "SR 11-7",
+          "articles": [{ "ref": "SR-11-7", "status": "compliant", "scope": "model-risk-management" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "Basel III/IV CRR Art.325 — market risk model records" },
+      "context": {
+        "portfolioId": "FUND-001",
+        "varMethod": "historical",
+        "confidenceLevel": 99,
+        "holdingPeriod": 10
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "b2c3d4e5-f6a7-8901-bcde-f12345678901",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T14:35:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/risk-compass/limit-enforcer"
+    ],
+    "detail": {
+      "recordId": "aud-b2c3d4e5f6a7",
+      "timestamp": "2026-03-20T14:35:00.000Z",
+      "agentId": "limit-enforcer",
+      "application": "risk-compass",
+      "model": "limit-enforcer-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "write risk-compass/limits/FUND-001/var-limit",
+        "riskScore": 95,
+        "reason": "Attempted write to risk limits — limit-enforcer is alert-only, cannot modify limits"
+      },
+      "auditCategory": "separation-of-duties",
+      "eventType": "limit-write-blocked",
+      "severity": "critical",
+      "impactArea": "internal-controls",
+      "compliance": [
+        {
+          "framework": "Basel III/IV",
+          "articles": [{ "ref": "CRR-Art.325", "status": "violation-blocked", "scope": "limit-modification" }]
+        },
+        {
+          "framework": "AIFMD",
+          "articles": [{ "ref": "Art.15", "status": "violation-blocked", "scope": "risk-management-separation" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "Dodd-Frank — internal controls violation evidence" },
+      "context": {
+        "limitWriteAttempt": true,
+        "portfolioId": "FUND-001"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "c3d4e5f6-a7b8-9012-cdef-123456789012",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T15:00:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/risk-compass/stress-tester"
+    ],
+    "detail": {
+      "recordId": "aud-c3d4e5f6a7b8",
+      "timestamp": "2026-03-20T15:00:00.000Z",
+      "agentId": "stress-tester",
+      "application": "risk-compass",
+      "model": "stress-tester-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "stress-engine run --scenario 2008-GFC --portfolios ALL",
+        "riskScore": 35,
+        "reason": null
+      },
+      "auditCategory": "stress-test-execution",
+      "eventType": "stress-test-completed",
+      "severity": "medium",
+      "impactArea": "risk-analytics",
+      "compliance": [
+        {
+          "framework": "Dodd-Frank",
+          "articles": [{ "ref": "Section-165(i)", "status": "compliant", "scope": "stress-testing" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "Dodd-Frank Section 165(i) — stress testing records" },
+      "context": {
+        "scenarioName": "2008-GFC",
+        "portfolioScope": "ALL",
+        "scenarioSeverity": "severe"
+      }
+    }
+  }
+]

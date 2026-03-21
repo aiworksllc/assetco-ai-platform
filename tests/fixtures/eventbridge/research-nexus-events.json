@@ -1,0 +1,143 @@
+[
+  {
+    "version": "0",
+    "id": "a1b2c3d4-e5f6-7890-abcd-ef0123456789",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T09:15:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/research-nexus/market-analyst"
+    ],
+    "detail": {
+      "recordId": "aud-a1b2c3d4e5f6",
+      "timestamp": "2026-03-20T09:15:00.000Z",
+      "agentId": "market-analyst",
+      "application": "research-nexus",
+      "model": "market-analyst-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "read positions/equity-book/long-positions.json",
+        "riskScore": 98,
+        "reason": "Chinese wall violation — market-analyst cannot access trading positions"
+      },
+      "auditCategory": "chinese-wall-violation-attempt",
+      "eventType": "chinese-wall-violation-attempt",
+      "severity": "critical",
+      "impactArea": "information-security",
+      "compliance": [
+        {
+          "framework": "MAR",
+          "articles": [{ "ref": "Art.10", "status": "violation-blocked", "scope": "information-barrier" }]
+        },
+        {
+          "framework": "SEC Advisers Act",
+          "articles": [{ "ref": "Section-204A", "status": "violation-blocked", "scope": "insider-trading-prevention" }]
+        },
+        {
+          "framework": "Reg FD",
+          "articles": [{ "ref": "Reg-FD", "status": "violation-blocked", "scope": "fair-disclosure" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "MAR Art.7/8 insider dealing investigation; Reg FD enforcement" },
+      "context": {
+        "chineseWallViolation": true,
+        "attemptedPath": "positions/equity-book/long-positions.json",
+        "denySource": "research-nexus-base"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "b2c3d4e5-f6a7-8901-bcde-f01234567890",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T10:00:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/research-nexus/esg-scorer"
+    ],
+    "detail": {
+      "recordId": "aud-b2c3d4e5f6a7",
+      "timestamp": "2026-03-20T10:00:00.000Z",
+      "agentId": "esg-scorer",
+      "application": "research-nexus",
+      "model": "esg-scorer-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "write compliance/sfdr/FUND-001-art8-2026.json",
+        "riskScore": 13,
+        "reason": null
+      },
+      "auditCategory": "esg-scoring",
+      "eventType": "sfdr-disclosure-written",
+      "severity": "medium",
+      "impactArea": "esg-compliance",
+      "compliance": [
+        {
+          "framework": "SFDR",
+          "articles": [
+            { "ref": "Art.4", "status": "compliant", "scope": "principal-adverse-impact" },
+            { "ref": "Art.8", "status": "compliant", "scope": "environmental-social-characteristics" }
+          ]
+        },
+        {
+          "framework": "EU Taxonomy",
+          "articles": [{ "ref": "Art.8", "status": "compliant", "scope": "taxonomy-alignment" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "SFDR Art.4 PAI disclosure retention" },
+      "context": {
+        "fundId": "FUND-001",
+        "dataCoverage": 92
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "c3d4e5f6-a7b8-9012-cdef-012345678901",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T11:30:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/research-nexus/fair-value-modeler"
+    ],
+    "detail": {
+      "recordId": "aud-c3d4e5f6a7b8",
+      "timestamp": "2026-03-20T11:30:00.000Z",
+      "agentId": "fair-value-modeler",
+      "application": "research-nexus",
+      "model": "fair-value-modeler-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "write portfolios/nav/FUND-001/2026-03-20.json",
+        "riskScore": 98,
+        "reason": "NAV publication requires dual approval — fair-value-modeler writes to research/pre-publication/valuations/ only"
+      },
+      "auditCategory": "agent-suspension",
+      "eventType": "nav-accounting-write-blocked",
+      "severity": "critical",
+      "impactArea": "fund-operations",
+      "compliance": [
+        {
+          "framework": "Investment Company Act",
+          "articles": [{ "ref": "Rule-22c-1", "status": "violation-blocked", "scope": "nav-publication" }]
+        },
+        {
+          "framework": "ASC 820",
+          "articles": [{ "ref": "ASC-820", "status": "violation-blocked", "scope": "fair-value-measurement" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "Investment Company Act — NAV integrity violation evidence" },
+      "context": {
+        "navPublishAttempt": true,
+        "fundId": "FUND-001",
+        "fvHierarchyLevel": 3
+      }
+    }
+  }
+]

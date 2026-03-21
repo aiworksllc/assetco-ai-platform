@@ -1,0 +1,100 @@
+{
+  "agent": "trade-surveiller",
+  "application": "compliance-shield",
+  "version": "1.0",
+  "description": "Real-time trade surveillance. Broadest read scope in the firm. Zero write to trading systems.",
+  "enforcement": {
+    "mode": "full",
+    "failBehavior": "DENY",
+    "auditAll": true
+  },
+  "identity": {
+    "role": "ComplianceSurveillance",
+    "allowedPersonas": ["trade-surveiller"],
+    "authorityLevel": "surveillance-read-only",
+    "environmentScope": ["production"]
+  },
+  "dataAccess": {
+    "readAllow": [
+      "trading/**",
+      "orders/**",
+      "executions/**",
+      "positions/**",
+      "risk-compass/alerts/**",
+      "research-nexus/publications/metadata/**",
+      "ops-fabric/settlement/**",
+      "alpha-engine/orders/**",
+      "alpha-engine/signals/metadata/**",
+      "trade-sentinel/blotter/**",
+      "compliance/surveillance/**"
+    ],
+    "readDeny": [
+      "**/client-pii/**",
+      "**/ssn/**",
+      "**/passport/**",
+      "**/personal-address/**",
+      "deal-room/**",
+      "**/mnpi/**",
+      "**/advisory-mandates/**",
+      "advisor-lens/client-profiles/full/**"
+    ],
+    "writeAllow": [
+      "compliance/surveillance/alerts/**",
+      "compliance/surveillance/str-candidates/**",
+      "compliance/surveillance/pattern-logs/**"
+    ],
+    "writeDeny": [
+      "trading/**",
+      "orders/**",
+      "executions/**",
+      "positions/**",
+      "alpha-engine/**",
+      "trade-sentinel/**",
+      "ops-fabric/**",
+      "risk-compass/**",
+      "**"
+    ]
+  },
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "node compliance/surveillance/alert-generator *",
+        "node compliance/surveillance/str-writer *",
+        "node compliance/surveillance/pattern-detector *"
+      ],
+      "deny": [
+        "curl * trade-sentinel *",
+        "curl * alpha-engine *",
+        "* cancel-order *",
+        "* modify-order *",
+        "* book-trade *",
+        "rm *",
+        "DELETE *",
+        "DROP *"
+      ]
+    },
+    "edit": {
+      "allowPaths": ["compliance/surveillance/**"],
+      "denyPaths": [
+        "trading/**",
+        "orders/**",
+        "executions/**",
+        "positions/**",
+        "alpha-engine/**",
+        "trade-sentinel/**",
+        "ops-fabric/**"
+      ]
+    }
+  },
+  "riskBudget": {
+    "sessionLimit": 500,
+    "decayRate": 0.05,
+    "highRiskThreshold": 300,
+    "freezeOnBreach": false
+  },
+  "classification": {
+    "euAiActRiskLevel": "SIGNIFICANT",
+    "dataClassification": "CONFIDENTIAL",
+    "regulatoryFrameworks": ["FINRA-3110", "MAR-Art.12", "MAR-Art.16", "DORA-Art.10"]
+  }
+}

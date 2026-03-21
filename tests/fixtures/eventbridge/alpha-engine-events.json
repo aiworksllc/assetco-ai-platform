@@ -1,0 +1,129 @@
+[
+  {
+    "version": "0",
+    "id": "f6a7b8c9-d0e1-2345-fabc-456789012345",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T09:15:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/alpha-engine/portfolio-optimizer"
+    ],
+    "detail": {
+      "recordId": "aud-f6a7b8c9d0e1",
+      "timestamp": "2026-03-20T09:15:00.000Z",
+      "agentId": "portfolio-optimizer",
+      "application": "alpha-engine",
+      "model": "portfolio-optimizer-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "optimizer run --portfolio GROWTH-EQUITY --rebalance quarterly",
+        "riskScore": 18,
+        "reason": null
+      },
+      "auditCategory": "portfolio-optimization",
+      "eventType": "optimization-proposed",
+      "severity": "low",
+      "impactArea": "portfolio-management",
+      "compliance": [
+        {
+          "framework": "SEC Advisers Act",
+          "articles": [{ "ref": "Rule-204-2", "status": "compliant", "scope": "fiduciary-duty" }]
+        },
+        {
+          "framework": "MiFID II",
+          "articles": [{ "ref": "Art.25", "status": "compliant", "scope": "suitability" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "SEC Advisers Act Rule 204-2 — portfolio optimization records" },
+      "context": {
+        "portfolioId": "GROWTH-EQUITY",
+        "aggregateWeightChangePct": 5,
+        "ipsConcentrationProximityPct": 60
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "a7b8c9d0-e1f2-3456-abcd-567890123456",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T09:20:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/alpha-engine/portfolio-optimizer"
+    ],
+    "detail": {
+      "recordId": "aud-a7b8c9d0e1f2",
+      "timestamp": "2026-03-20T09:20:00.000Z",
+      "agentId": "portfolio-optimizer",
+      "application": "alpha-engine",
+      "model": "portfolio-optimizer-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "read research-nexus/pre-publication/alpha-signals",
+        "riskScore": 95,
+        "reason": "Chinese wall violation — portfolio-optimizer cannot access pre-publication research"
+      },
+      "auditCategory": "chinese-wall-block",
+      "eventType": "chinese-wall-violation-attempt",
+      "severity": "critical",
+      "impactArea": "information-security",
+      "compliance": [
+        {
+          "framework": "MAR",
+          "articles": [{ "ref": "Art.10", "status": "violation-blocked", "scope": "information-barrier" }]
+        },
+        {
+          "framework": "SEC Advisers Act",
+          "articles": [{ "ref": "Section-204A", "status": "violation-blocked", "scope": "insider-trading-prevention" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "MAR Art.10 — Chinese wall violation evidence" },
+      "context": {
+        "chineseWallViolation": true
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "b8c9d0e1-f2a3-4567-bcde-678901234567",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T10:00:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/alpha-engine/allocation-advisor"
+    ],
+    "detail": {
+      "recordId": "aud-b8c9d0e1f2a3",
+      "timestamp": "2026-03-20T10:00:00.000Z",
+      "agentId": "allocation-advisor",
+      "application": "alpha-engine",
+      "model": "allocation-advisor-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "write portfolios/active/GROWTH-EQUITY/allocations",
+        "riskScore": 98,
+        "reason": "Human approval gate — allocation changes require ALLOCATION_PROPOSAL_APPROVED event"
+      },
+      "auditCategory": "ips-violation-attempt",
+      "eventType": "approval-bypass-attempt",
+      "severity": "critical",
+      "impactArea": "fiduciary",
+      "compliance": [
+        {
+          "framework": "EU AI Act",
+          "articles": [{ "ref": "Art.14", "status": "violation-blocked", "scope": "human-oversight" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "EU AI Act Art.14 — human oversight gate violation evidence" },
+      "context": {
+        "approvalBypassAttempt": true
+      }
+    }
+  }
+]

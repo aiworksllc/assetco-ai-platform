@@ -1,0 +1,93 @@
+{
+  "agent": "breach-detector",
+  "application": "compliance-shield",
+  "version": "1.0",
+  "description": "Monitors SOE logs, risk breaches, and information barrier violations. Escalates to humans. Cannot remediate.",
+  "enforcement": {
+    "mode": "full",
+    "failBehavior": "DENY",
+    "auditAll": true
+  },
+  "identity": {
+    "role": "ComplianceMonitoring",
+    "allowedPersonas": ["breach-detector"],
+    "authorityLevel": "monitor-and-escalate",
+    "environmentScope": ["production"]
+  },
+  "dataAccess": {
+    "readAllow": [
+      "sentinel-ops/audit-logs/**",
+      "sentinel-ops/soe-violations/**",
+      "sentinel-ops/deny-events/**",
+      "risk-compass/alerts/**",
+      "risk-compass/limit-breaches/**",
+      "ops-fabric/access-logs/**",
+      "information-barrier/crossing-attempts/**",
+      "information-barrier/logs/**",
+      "compliance/surveillance/alerts/**",
+      "compliance/alerts/**",
+      "compliance/escalations/**"
+    ],
+    "readDeny": [
+      "**/client-pii/**",
+      "deal-room/**",
+      "**/mnpi/content/**"
+    ],
+    "writeAllow": [
+      "compliance/alerts/**",
+      "compliance/escalations/**"
+    ],
+    "writeDeny": [
+      "sentinel-ops/soe-definitions/**",
+      "sentinel-ops/meta-soe/**",
+      "risk-compass/**",
+      "information-barrier/**",
+      "ops-fabric/**",
+      "trading/**",
+      "positions/**",
+      "**"
+    ]
+  },
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "node compliance/breach-detector/alert-writer *",
+        "node compliance/breach-detector/escalation-generator *",
+        "node compliance/breach-detector/severity-classifier *"
+      ],
+      "deny": [
+        "* modify-soe *",
+        "* update-risk-limit *",
+        "* terminate-agent *",
+        "* block-agent *",
+        "* update-information-barrier *",
+        "* modify-position *",
+        "rm *"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "compliance/alerts/**",
+        "compliance/escalations/**"
+      ],
+      "denyPaths": [
+        "sentinel-ops/**",
+        "risk-compass/**",
+        "information-barrier/**",
+        "ops-fabric/**",
+        "trading/**"
+      ]
+    }
+  },
+  "riskBudget": {
+    "sessionLimit": 300,
+    "decayRate": 0.08,
+    "highRiskThreshold": 200,
+    "freezeOnBreach": false
+  },
+  "classification": {
+    "euAiActRiskLevel": "SIGNIFICANT",
+    "dataClassification": "CONFIDENTIAL",
+    "regulatoryFrameworks": ["SOX-302", "SOX-404", "DORA-Art.10", "MAR-Art.16", "SEC-17a-4"]
+  }
+}

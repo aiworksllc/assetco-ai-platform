@@ -1,0 +1,97 @@
+{
+  "agent": "regulatory-filer",
+  "application": "compliance-shield",
+  "version": "1.0",
+  "description": "Formats regulatory submissions for human sign-off. Write access confined to compliance/filings/** only. Cannot submit — humans submit.",
+  "enforcement": {
+    "mode": "full",
+    "failBehavior": "DENY",
+    "auditAll": true
+  },
+  "identity": {
+    "role": "RegulatoryFiling",
+    "allowedPersonas": ["regulatory-filer"],
+    "authorityLevel": "filing-preparation",
+    "environmentScope": ["production"]
+  },
+  "dataAccess": {
+    "readAllow": [
+      "compliance/reports/**",
+      "compliance/surveillance/summaries/**",
+      "compliance/alerts/summaries/**",
+      "entity-registry/**",
+      "fund-registry/**",
+      "compliance/filings/**"
+    ],
+    "readDeny": [
+      "**/client-pii/**",
+      "**/ssn/**",
+      "**/personal-address/**",
+      "trading/**",
+      "positions/**",
+      "ops-fabric/**",
+      "alpha-engine/**",
+      "deal-room/**",
+      "**/mnpi/**"
+    ],
+    "writeAllow": [
+      "compliance/filings/**"
+    ],
+    "writeDeny": [
+      "compliance/reports/**",
+      "trading/**",
+      "positions/**",
+      "ops-fabric/**",
+      "alpha-engine/**",
+      "trade-sentinel/**",
+      "risk-compass/**",
+      "**"
+    ]
+  },
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "node compliance/filers/emir-tr-formatter *",
+        "node compliance/filers/mifir-rts25-formatter *",
+        "node compliance/filers/form-pf-formatter *",
+        "node compliance/filers/sec-13f-formatter *",
+        "node compliance/filers/finra-focus-formatter *",
+        "node compliance/filers/validation-runner *",
+        "node compliance/filers/status-updater * DRAFT *",
+        "node compliance/filers/status-updater * PENDING_REVIEW *"
+      ],
+      "deny": [
+        "* submit-to-esma *",
+        "* submit-to-dtcc *",
+        "* submit-to-sec *",
+        "* submit-to-finra *",
+        "* submit-to-cftc *",
+        "curl * regulatory-portal *",
+        "node compliance/filers/status-updater * SUBMITTED *",
+        "node compliance/filers/status-updater * APPROVED *",
+        "rm *"
+      ]
+    },
+    "edit": {
+      "allowPaths": ["compliance/filings/**"],
+      "denyPaths": [
+        "compliance/reports/**",
+        "trading/**",
+        "positions/**",
+        "ops-fabric/**",
+        "alpha-engine/**"
+      ]
+    }
+  },
+  "riskBudget": {
+    "sessionLimit": 150,
+    "decayRate": 0.1,
+    "highRiskThreshold": 100,
+    "freezeOnBreach": true
+  },
+  "classification": {
+    "euAiActRiskLevel": "SIGNIFICANT",
+    "dataClassification": "CONFIDENTIAL",
+    "regulatoryFrameworks": ["EMIR-Art.9", "MiFIR-RTS25", "SOX-302", "SOX-404", "SEC-13F", "FINRA-4511"]
+  }
+}

@@ -1,0 +1,90 @@
+{
+  "agentId": "proposal-generator",
+  "application": "advisor-lens",
+  "version": "1.0",
+  "description": "Generates draft investment proposals with mandatory disclosures. All proposals routed to human advisor approval queue — never delivered directly to clients.",
+  "euAiActRiskLevel": "HIGH",
+  "enforcement": {
+    "mode": "full",
+    "failBehavior": "DENY",
+    "auditAll": true
+  },
+  "identity": {
+    "role": "ProposalDraftingAgent",
+    "allowedPersonas": ["proposal-generator"],
+    "authorityLevel": "draft-only",
+    "environmentScope": ["production", "uat"],
+    "clientFacing": false
+  },
+  "dataAccess": {
+    "readAllow": [
+      "advisory/suitability-results/**",
+      "research/published/**",
+      "research/published-notes/**",
+      "market-data/**",
+      "alpha-engine/model-portfolios/**",
+      "alpha-engine/rebalancing-signals/**",
+      "products/fund-data/**",
+      "products/fee-schedules/**",
+      "products/sfdr-classifications/**",
+      "products/cost-disclosure/**"
+    ],
+    "readDeny": [
+      "crm/clients/**/ssn",
+      "crm/clients/**/tax-id",
+      "crm/clients/**/bank-accounts/**",
+      "crm/clients/**/payment-details/**",
+      "research/pre-publication/**",
+      "research/drafts/**",
+      "research/embargoed/**",
+      "trading/**",
+      "orders/**",
+      "advisory/proposals/delivered/**"
+    ],
+    "writeAllow": [
+      "advisory/proposals/draft/**"
+    ],
+    "writeDeny": [
+      "advisory/proposals/delivered/**",
+      "advisory/proposals/sent/**",
+      "advisory/proposals/approved/**",
+      "crm/**",
+      "portfolios/**",
+      "orders/**",
+      "trading/**",
+      "advisory/reports/**"
+    ]
+  },
+  "toolActions": {
+    "bash": {
+      "allow": [],
+      "deny": ["*"]
+    },
+    "email": {
+      "allow": [],
+      "deny": ["*"]
+    }
+  },
+  "contentGuardrails": {
+    "art52DisclosureRequired": true,
+    "art52DisclosureText": "This proposal was generated with AI assistance. Your advisor has reviewed and approved this recommendation before it was presented to you.",
+    "art52EnforcementMode": "block-on-missing",
+    "requiredDisclosures": [
+      "art52-ai-disclosure",
+      "mifid2-cost-and-charges",
+      "risk-warnings",
+      "conflicts-of-interest"
+    ]
+  },
+  "riskBudget": {
+    "dailyLimit": 200,
+    "escalateAt": 140,
+    "freezeOnBreach": true,
+    "resetSchedule": "00:00 UTC"
+  },
+  "classification": {
+    "euAiActRiskLevel": "HIGH",
+    "dataClassification": "CONFIDENTIAL",
+    "regulatoryFrameworks": ["EU-AI-Act-Art.52", "MiFID-II-Art.24", "GDPR-Art.22", "SEC-Advisers-Act"]
+  }
+}

@@ -1,0 +1,104 @@
+{
+  "agentId": "alpha-engine/factor-analyst",
+  "version": "1.1.0",
+  "application": "AlphaEngine",
+  "classification": "HIGH_RISK",
+  "regulatoryFrameworks": ["SEC_ADVISERS_ACT", "SR_11_7"],
+
+  "identity": {
+    "role": "FactorAnalysisService",
+    "authorityLevel": "read-only-analysis",
+    "fiduciaryNote": "Factor-analyst is a read-only analytical service. Zero write access to production portfolio, trading, or client systems. Outputs are advisory inputs to portfolio-optimizer."
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "portfolios/live/**",
+      "portfolios/model/**",
+      "portfolios/optimized/**",
+      "data/factors/**",
+      "data/benchmarks/**",
+      "data/securities/**",
+      "research-nexus/published/factor-data/**",
+      "mandates/ips/**"
+    ],
+    "readDeny": [
+      "research-nexus/pre-publication/**",
+      "clients/pii/**",
+      "trading/orders/**",
+      "trading/execution/**",
+      "deal-room/**"
+    ],
+    "writeAllow": [
+      "portfolios/factor-reports/**",
+      "portfolios/attribution/**"
+    ],
+    "writeDeny": [
+      "portfolios/live/**",
+      "portfolios/model/**",
+      "portfolios/optimized/**",
+      "portfolios/rebalance/**",
+      "trading/**",
+      "compliance/**",
+      "clients/**",
+      "mandates/**",
+      "research-nexus/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "python factor/compute-exposures.py *",
+        "python factor/attribution.py *",
+        "python factor/report.py *"
+      ],
+      "deny": [
+        "python optimizer/run.py *",
+        "python rebalancer/*.py *",
+        "curl *oms*",
+        "curl *trading*",
+        "rm -rf *"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "portfolios/factor-reports/**",
+        "portfolios/attribution/**"
+      ],
+      "denyPaths": [
+        "portfolios/live/**",
+        "portfolios/model/**",
+        "portfolios/optimized/**",
+        "portfolios/rebalance/**",
+        "trading/**",
+        "compliance/**",
+        "clients/**",
+        "mandates/**",
+        "research-nexus/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 400,
+    "perCallCost": {
+      "factor-exposure-compute": 1,
+      "attribution-run": 2,
+      "full-portfolio-report": 3
+    },
+    "breachAction": "block-and-escalate",
+    "resetCadence": "daily-00:00-UTC"
+  },
+
+  "auditRequirements": {
+    "logLevel": "STANDARD",
+    "retentionYears": 7,
+    "immutable": true,
+    "requiredFields": [
+      "portfolioId", "reportId", "timestamp",
+      "factorExposures", "benchmarkRelativeExposures",
+      "attributionSummary"
+    ]
+  }
+}

@@ -1,0 +1,91 @@
+{
+  "type": "bundle",
+  "id": "bundle--rc-01a2b3c4-d5e6-7890-abcd-ef0123456789",
+  "spec_version": "2.1",
+  "created": "2026-03-20T12:00:00.000Z",
+  "modified": "2026-03-20T12:00:00.000Z",
+  "objects": [
+    {
+      "type": "identity",
+      "id": "identity--sentinel-ops-soe",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "name": "Sentinel-Ops SOE Engine",
+      "identity_class": "system",
+      "description": "YadriWorks Sentinel-Ops Safe Operating Envelope enforcement system"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--rc-var-computation",
+      "spec_version": "2.1",
+      "created": "2026-03-20T09:00:00.000Z",
+      "modified": "2026-03-20T09:00:00.000Z",
+      "name": "RiskCompass VaR Computation — Normal Operation",
+      "description": "var-calculator agent computed portfolio VaR within SOE boundaries. Basel III/IV compliant.",
+      "indicator_types": ["benign"],
+      "pattern": "[x-soe-event:agent_id = 'var-calculator' AND x-soe-event:decision = 'allow' AND x-soe-event:risk_score < 30]",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T09:00:00.000Z",
+      "labels": ["soe:green", "basel-iii", "risk-analytics"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--rc-limit-write-blocked",
+      "spec_version": "2.1",
+      "created": "2026-03-20T09:10:00.000Z",
+      "modified": "2026-03-20T09:10:00.000Z",
+      "name": "RiskCompass Limit Write Attempt — Blocked",
+      "description": "limit-enforcer attempted to write to risk-limits/active/ directory. SOE denied — agents cannot modify risk limits directly. Basel IV limit integrity preserved.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'limit-enforcer' AND x-soe-event:decision = 'deny' AND x-soe-event:tool_name LIKE 'write risk-limits/active/%']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T09:10:00.000Z",
+      "labels": ["soe:critical", "basel-iv", "limit-integrity", "human-oversight"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--rc-stress-test-compliant",
+      "spec_version": "2.1",
+      "created": "2026-03-20T10:00:00.000Z",
+      "modified": "2026-03-20T10:00:00.000Z",
+      "name": "RiskCompass Stress Test — Compliant Execution",
+      "description": "stress-tester ran CCAR/DFAST scenarios with read-only access. Dodd-Frank stress testing requirements met.",
+      "indicator_types": ["benign"],
+      "pattern": "[x-soe-event:agent_id = 'stress-tester' AND x-soe-event:decision = 'allow' AND x-soe-event:audit_category = 'stress-testing']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T10:00:00.000Z",
+      "labels": ["soe:green", "dodd-frank", "ccar", "stress-testing"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "observed-data",
+      "id": "observed-data--rc-20260320",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "first_observed": "2026-03-20T00:00:00.000Z",
+      "last_observed": "2026-03-20T23:59:59.999Z",
+      "number_observed": 48,
+      "object_refs": [
+        "indicator--rc-var-computation",
+        "indicator--rc-limit-write-blocked",
+        "indicator--rc-stress-test-compliant"
+      ],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--rc-limit-block-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--rc-limit-write-blocked",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "SOE gate blocked unauthorized risk limit modification — Basel IV compliance enforced"
+    }
+  ]
+}

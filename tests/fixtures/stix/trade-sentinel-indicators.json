@@ -1,0 +1,102 @@
+{
+  "type": "bundle",
+  "id": "bundle--ts-03c4d5e6-f7a8-9012-cdef-012345678901",
+  "spec_version": "2.1",
+  "created": "2026-03-20T12:00:00.000Z",
+  "modified": "2026-03-20T12:00:00.000Z",
+  "objects": [
+    {
+      "type": "identity",
+      "id": "identity--sentinel-ops-soe",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "name": "Sentinel-Ops SOE Engine",
+      "identity_class": "system",
+      "description": "YadriWorks Sentinel-Ops Safe Operating Envelope enforcement system"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--ts-order-staged-compliant",
+      "spec_version": "2.1",
+      "created": "2026-03-20T14:30:15.123Z",
+      "modified": "2026-03-20T14:30:15.123Z",
+      "name": "TradeSentinel Order Staged — Best Execution Compliant",
+      "description": "order-router staged AAPL order via FlexTrade with venue selection rationale. MiFID II Art.27 best execution obligation met.",
+      "indicator_types": ["benign"],
+      "pattern": "[x-soe-event:agent_id = 'order-router' AND x-soe-event:decision = 'allow' AND x-soe-event:audit_category = 'order-execution']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T14:30:15.123Z",
+      "labels": ["soe:green", "mifid-ii-art27", "best-execution", "order-routing"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--ts-nbbo-trade-through-blocked",
+      "spec_version": "2.1",
+      "created": "2026-03-20T14:31:00.456Z",
+      "modified": "2026-03-20T14:31:00.456Z",
+      "name": "TradeSentinel NBBO Trade-Through — Blocked",
+      "description": "order-router attempted to execute TSLA at $142.50 outside NBBO. SOE blocked per Reg NMS Rule 611 trade-through prohibition.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'order-router' AND x-soe-event:decision = 'deny' AND x-soe-event:event_type = 'nbbo-validation']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T14:31:00.456Z",
+      "labels": ["soe:high", "reg-nms-rule611", "nbbo", "trade-through", "best-execution"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--ts-spoofing-str-draft",
+      "spec_version": "2.1",
+      "created": "2026-03-20T14:45:00.789Z",
+      "modified": "2026-03-20T14:45:00.789Z",
+      "name": "TradeSentinel Spoofing Detection — STR Draft Created",
+      "description": "execution-monitor detected spoofing pattern in ORD-007, ORD-008. MAR Art.12 pattern detection triggered STR draft per Art.16 filing obligation.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'execution-monitor' AND x-soe-event:decision = 'allow' AND x-soe-event:event_type = 'str-draft-created' AND x-soe-event:context.mar_pattern_type = 'SPOOFING']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T14:45:00.789Z",
+      "labels": ["soe:high", "mar-art12", "mar-art16", "spoofing", "str-filing", "market-abuse"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "observed-data",
+      "id": "observed-data--ts-20260320",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "first_observed": "2026-03-20T00:00:00.000Z",
+      "last_observed": "2026-03-20T23:59:59.999Z",
+      "number_observed": 284,
+      "object_refs": [
+        "indicator--ts-order-staged-compliant",
+        "indicator--ts-nbbo-trade-through-blocked",
+        "indicator--ts-spoofing-str-draft"
+      ],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--ts-nbbo-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--ts-nbbo-trade-through-blocked",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "SOE gate blocked NBBO trade-through — Reg NMS Rule 611 compliance enforced"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--ts-spoofing-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--ts-spoofing-str-draft",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "MAR Art.12 spoofing pattern detected — STR draft created per Art.16"
+    }
+  ]
+}

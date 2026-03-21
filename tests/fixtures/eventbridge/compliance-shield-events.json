@@ -1,0 +1,134 @@
+[
+  {
+    "version": "0",
+    "id": "f2a3b4c5-d6e7-8901-fabc-012345678901",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T09:00:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/compliance-shield/trade-surveiller"
+    ],
+    "detail": {
+      "recordId": "aud-f2a3b4c5d6e7",
+      "timestamp": "2026-03-20T09:00:00.000Z",
+      "agentId": "trade-surveiller",
+      "application": "compliance-shield",
+      "model": "trade-surveiller-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "pattern-detector run --scan FULL --sources TradeSentinel,AlphaEngine,OpsFabric",
+        "riskScore": 22,
+        "reason": null
+      },
+      "auditCategory": "trade-surveillance-alert",
+      "eventType": "pattern-detected",
+      "severity": "medium",
+      "impactArea": "market-integrity",
+      "compliance": [
+        {
+          "framework": "FINRA 3110",
+          "articles": [{ "ref": "Rule-3110", "status": "compliant", "scope": "supervisory-system" }]
+        },
+        {
+          "framework": "MAR",
+          "articles": [{ "ref": "Art.12", "status": "pattern-detected", "scope": "WASH_TRADING" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "FINRA Rule 3110 — supervisory system records (7yr) + AssetCo buffer" },
+      "context": {
+        "patternDetected": true,
+        "patternType": "WASH_TRADING",
+        "instrumentId": "US0378331005",
+        "sourceAgent": "trade-sentinel"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "a3b4c5d6-e7f8-9012-abcd-123456789012",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T09:05:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/compliance-shield/breach-detector"
+    ],
+    "detail": {
+      "recordId": "aud-a3b4c5d6e7f8",
+      "timestamp": "2026-03-20T09:05:00.000Z",
+      "agentId": "breach-detector",
+      "application": "compliance-shield",
+      "model": "breach-detector-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "alert-writer --severity CRITICAL --type INFORMATION_BARRIER",
+        "riskScore": 62,
+        "reason": null
+      },
+      "auditCategory": "information-barrier-violation",
+      "eventType": "barrier-crossing-detected",
+      "severity": "critical",
+      "impactArea": "information-security",
+      "compliance": [
+        {
+          "framework": "SOX",
+          "articles": [{ "ref": "Section-302", "status": "barrier-crossing-detected", "scope": "information-barriers" }]
+        },
+        {
+          "framework": "SEC Rule 17a-4",
+          "articles": [{ "ref": "Rule-17a-4", "status": "violation-logged", "scope": "information-barrier-evidence" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "SOX, SEC Rule 17a-4 — information barrier evidence" },
+      "context": {
+        "informationBarrierCrossing": true,
+        "violatingAgent": "alpha-engine/portfolio-optimizer",
+        "attemptedPath": "research-nexus/pre-publication/alpha-signals",
+        "barrierName": "research-trading-wall"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "b4c5d6e7-f8a9-0123-bcde-234567890123",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T07:30:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/compliance-shield/regulatory-filer"
+    ],
+    "detail": {
+      "recordId": "aud-b4c5d6e7f8a9",
+      "timestamp": "2026-03-20T07:30:00.000Z",
+      "agentId": "regulatory-filer",
+      "application": "compliance-shield",
+      "model": "regulatory-filer-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "status-updater EMIR-TR-20260319 SUBMITTED",
+        "riskScore": 97,
+        "reason": "SUBMITTED status transition is human-only — regulatory-filer can set DRAFT and PENDING_REVIEW only"
+      },
+      "auditCategory": "sox-evidence",
+      "eventType": "unauthorized-status-transition-blocked",
+      "severity": "critical",
+      "impactArea": "internal-controls",
+      "compliance": [
+        {
+          "framework": "SOX",
+          "articles": [{ "ref": "Section-404", "status": "violation-blocked", "scope": "human-only-transition" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "SOX Section 802 — internal controls evidence packages" },
+      "context": {
+        "statusTransition": "SUBMITTED",
+        "filingType": "EMIR_TR"
+      }
+    }
+  }
+]

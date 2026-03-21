@@ -1,0 +1,47 @@
+{
+  "id": "riskcompass-base",
+  "version": "1.0.0",
+  "description": "Base SOE for all RiskCompass agents. Encodes the read-only, analytics-only constraint shared across the application.",
+  "meta": {
+    "application": "RiskCompass",
+    "owner": "sarah.nakamura@assetco.com",
+    "euAiActClass": "HIGH_RISK",
+    "deploymentPhase": 1,
+    "approvedBy": "Model Risk Committee",
+    "approvalDate": "2026-01-15"
+  },
+  "dataAccess": {
+    "writeAllow": [],
+    "writeDeny": ["**"]
+  },
+  "toolActions": {
+    "deny": [
+      "bloomberg_aim.place_order",
+      "bloomberg_aim.cancel_order",
+      "bloomberg_aim.modify_order",
+      "bloomberg_aim.write_position",
+      "aladdin.write_*",
+      "aladdin.modify_*",
+      "internal_api.post_trade",
+      "internal_api.cancel_trade",
+      "internal_api.modify_position",
+      "alphaengine.submit_instruction",
+      "tradesentinel.submit_order",
+      "tradesentinel.cancel_order",
+      "opsfabric.write_settlement",
+      "bash",
+      "edit",
+      "write",
+      "file_write",
+      "db_write",
+      "db_update",
+      "db_delete"
+    ]
+  },
+  "failMode": "CLOSED",
+  "escalationTarget": "sarah.nakamura@assetco.com",
+  "auditRetention": {
+    "riskCalculations": "7_years",
+    "routineMonitoring": "5_years"
+  }
+}

@@ -1,0 +1,85 @@
+{
+  "agentId": "suitability-checker",
+  "application": "advisor-lens",
+  "version": "1.0",
+  "description": "Validates proposed investments against client suitability profile. MiFID II Art.25 compliance gate.",
+  "euAiActRiskLevel": "HIGH",
+  "enforcement": {
+    "mode": "full",
+    "failBehavior": "DENY",
+    "auditAll": true
+  },
+  "identity": {
+    "role": "SuitabilityAnalyst",
+    "allowedPersonas": ["suitability-checker"],
+    "authorityLevel": "read-evaluate-write-results",
+    "environmentScope": ["production", "uat"],
+    "clientFacing": false
+  },
+  "dataAccess": {
+    "readAllow": [
+      "crm/clients/**/risk-profile/**",
+      "crm/clients/**/investment-objectives/**",
+      "crm/clients/**/restriction-lists/**",
+      "crm/clients/**/kyc-summary/**",
+      "products/catalog/**",
+      "products/risk-ratings/**",
+      "regulatory/prohibited-securities/**",
+      "regulatory/erisa-restrictions/**",
+      "regulatory/mifid-product-classifications/**"
+    ],
+    "readDeny": [
+      "crm/clients/**/ssn",
+      "crm/clients/**/tax-id",
+      "crm/clients/**/bank-accounts/**",
+      "crm/clients/**/payment-details/**",
+      "crm/clients/**/trading-history/**",
+      "research/pre-publication/**",
+      "research/drafts/**",
+      "research/embargoed/**",
+      "trading/**",
+      "orders/**",
+      "advisory/proposals/**"
+    ],
+    "writeAllow": [
+      "advisory/suitability-results/**"
+    ],
+    "writeDeny": [
+      "crm/**",
+      "clients/**",
+      "portfolios/**",
+      "orders/**",
+      "trading/**",
+      "advisory/proposals/**",
+      "advisory/reports/**"
+    ]
+  },
+  "toolActions": {
+    "bash": {
+      "allow": [],
+      "deny": ["*"]
+    },
+    "email": {
+      "allow": [],
+      "deny": ["*"]
+    }
+  },
+  "contentGuardrails": {
+    "art52DisclosureRequired": false,
+    "piiScrubbing": {
+      "enabled": true,
+      "scrubFields": ["ssn", "taxId", "bankAccount", "paymentDetails"]
+    }
+  },
+  "riskBudget": {
+    "dailyLimit": 500,
+    "escalateAt": 350,
+    "freezeOnBreach": true,
+    "resetSchedule": "00:00 UTC"
+  },
+  "classification": {
+    "euAiActRiskLevel": "HIGH",
+    "dataClassification": "CONFIDENTIAL",
+    "regulatoryFrameworks": ["MiFID-II-Art.25", "SEC-Advisers-Act", "ERISA", "GDPR-Art.22"]
+  }
+}

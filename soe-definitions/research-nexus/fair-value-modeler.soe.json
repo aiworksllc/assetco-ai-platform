@@ -1,0 +1,99 @@
+{
+  "agent": "fair-value-modeler",
+  "application": "research-nexus",
+  "version": "1.0.0",
+  "inherits": ["research-nexus-base"],
+
+  "identity": {
+    "role": "ValuationAnalyst",
+    "allowedPersonas": ["fair-value-modeler"],
+    "authorityLevel": "research-read-write-prepublication",
+    "environmentScope": ["research"]
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "data/comparables/**",
+      "data/pricing-sources/**",
+      "data/market-data/credit-spreads/**",
+      "data/market-data/rates/**",
+      "research/valuations/historical/**",
+      "portfolios/holdings/**",
+      "research/published/**"
+    ],
+    "readDeny": [
+      "trading/**",
+      "orders/**",
+      "executions/**",
+      "positions/**",
+      "portfolios/model/**",
+      "data/esg-providers/**",
+      "data/social-media/**"
+    ],
+    "writeAllow": [
+      "research/pre-publication/valuations/**"
+    ],
+    "writeDeny": [
+      "research/published/**",
+      "portfolios/**",
+      "portfolios/nav/**",
+      "accounting/**",
+      "trading/**",
+      "compliance/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "python dcf_model.py *",
+        "python comparables_analysis.py *",
+        "python fair_value_calculator.py *",
+        "python level3_rollforward.py *"
+      ],
+      "deny": [
+        "curl *trading*",
+        "curl *positions*",
+        "curl *orders*",
+        "curl *nav-system*",
+        "curl *portfolio-accounting*",
+        "rm -rf *",
+        "UPDATE *",
+        "INSERT INTO *nav*"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "research/pre-publication/valuations/**"
+      ],
+      "denyPaths": [
+        "research/published/**",
+        "portfolios/**",
+        "accounting/**",
+        "trading/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 200,
+    "perCallCost": {
+      "read": 1,
+      "write": 2,
+      "bash_execute": 5
+    },
+    "resetPeriod": "24h",
+    "freezeOnBreach": true
+  },
+
+  "classification": {
+    "dataClassification": "RESTRICTED",
+    "regulatoryFrameworks": ["ASC 820", "IFRS 13", "SEC Rule 204-2", "MAR Art.10"],
+    "euAiActRiskClass": "SIGNIFICANT",
+    "chineseWall": {
+      "barrierName": "research-trading-wall",
+      "violationSeverity": "CRITICAL",
+      "violationAction": "BLOCK_AND_ESCALATE"
+    }
+  }
+}

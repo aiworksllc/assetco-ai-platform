@@ -1,0 +1,137 @@
+{
+  "agentId": "alpha-engine/portfolio-optimizer",
+  "version": "1.2.0",
+  "application": "AlphaEngine",
+  "classification": "HIGH_RISK",
+  "regulatoryFrameworks": ["SEC_ADVISERS_ACT", "MIFID_II_ART25", "SFDR_ART8_9", "ERISA", "SR_11_7"],
+  "euAiActCategory": "ANNEX_III_HIGH_RISK",
+
+  "identity": {
+    "role": "PortfolioOptimizationService",
+    "authorityLevel": "propose-only",
+    "environmentScope": ["production", "model-validation"],
+    "fiduciaryNote": "Agent operates under SEC Advisers Act fiduciary obligation. All outputs are candidate portfolios subject to PM oversight. Agent does not have independent investment discretion."
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "research-nexus/published/signals/**",
+      "research-nexus/published/esg/**",
+      "research-nexus/published/factor-data/**",
+      "data/factors/**",
+      "data/benchmarks/**",
+      "data/securities/**",
+      "data/market/transaction-costs/**",
+      "mandates/ips/**",
+      "mandates/erisa/**",
+      "portfolios/live/**",
+      "portfolios/factor-reports/**"
+    ],
+    "readDeny": [
+      "research-nexus/pre-publication/**",
+      "research-nexus/staging/**",
+      "clients/pii/**",
+      "clients/identifiable/**",
+      "trading/orders/**",
+      "trading/execution/**",
+      "deal-room/**",
+      "compliance/investigations/**"
+    ],
+    "writeAllow": [
+      "portfolios/model/**",
+      "portfolios/optimized/**"
+    ],
+    "writeDeny": [
+      "trading/**",
+      "compliance/**",
+      "clients/**",
+      "mandates/**",
+      "research-nexus/**"
+    ]
+  },
+
+  "toolActions": {
+    "compute": {
+      "allow": [
+        "optimization.run *",
+        "factor.compute *",
+        "scenario.stress *",
+        "backtest.run *"
+      ],
+      "deny": [
+        "order.submit *",
+        "order.modify *",
+        "position.override *"
+      ]
+    },
+    "bash": {
+      "allow": [
+        "python optimizer/run.py *",
+        "python factor/compute.py *",
+        "python backtest/run.py *"
+      ],
+      "deny": [
+        "curl *trading*",
+        "curl *oms*",
+        "psql *client*",
+        "rm -rf *",
+        "aws s3 cp *compliance*"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "portfolios/model/**",
+        "portfolios/optimized/**"
+      ],
+      "denyPaths": [
+        "trading/**",
+        "compliance/**",
+        "clients/**",
+        "mandates/**"
+      ]
+    }
+  },
+
+  "fiduciaryConstraints": {
+    "concentrationLimits": {
+      "enforcement": "hard-deny",
+      "singleNameMaxWeight": "mandate-ips-defined",
+      "sectorMaxWeight": "mandate-ips-defined",
+      "countryMaxWeight": "mandate-ips-defined",
+      "assetClassEligibility": "mandate-ips-defined"
+    },
+    "esgConstraints": {
+      "enforcement": "hard-deny",
+      "sfdrArticle8MinScore": 50,
+      "sfdrArticle9MinScore": 70,
+      "paiExclusions": "research-nexus/published/esg/pai-exclusions.json"
+    },
+    "trackingErrorBounds": {
+      "enforcement": "hard-deny",
+      "maxActiveRisk": "mandate-ips-defined"
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 500,
+    "perCallCost": {
+      "full-optimization": 10,
+      "incremental-rebalance": 3,
+      "factor-compute": 1
+    },
+    "breachAction": "block-and-escalate",
+    "resetCadence": "daily-00:00-UTC"
+  },
+
+  "auditRequirements": {
+    "logLevel": "FULL",
+    "retentionYears": 7,
+    "immutable": true,
+    "requiredFields": [
+      "mandateId", "optimizationRunId", "timestamp",
+      "activeConstraints", "bindingConstraints",
+      "objectiveFunctionValue", "factorContributions",
+      "ipsVersion", "agentVersion"
+    ]
+  }
+}

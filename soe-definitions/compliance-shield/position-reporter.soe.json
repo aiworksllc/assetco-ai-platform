@@ -1,0 +1,92 @@
+{
+  "agent": "position-reporter",
+  "application": "compliance-shield",
+  "version": "1.0",
+  "description": "Generates regulatory position reports. Reads positions, writes reports. No modification of source data.",
+  "enforcement": {
+    "mode": "full",
+    "failBehavior": "DENY",
+    "auditAll": true
+  },
+  "identity": {
+    "role": "ComplianceReporting",
+    "allowedPersonas": ["position-reporter"],
+    "authorityLevel": "reporting-read-only",
+    "environmentScope": ["production"]
+  },
+  "dataAccess": {
+    "readAllow": [
+      "positions/**",
+      "ops-fabric/positions/**",
+      "ops-fabric/settlement/confirmed/**",
+      "trade-sentinel/executions/**",
+      "risk-compass/netting-sets/**",
+      "risk-compass/counterparty/**",
+      "fund-registry/**",
+      "entity-registry/**",
+      "compliance/reports/**",
+      "compliance/surveillance/summaries/**"
+    ],
+    "readDeny": [
+      "**/client-pii/**",
+      "**/personal-address/**",
+      "**/ssn/**",
+      "deal-room/**",
+      "**/mnpi/**",
+      "alpha-engine/strategies/**"
+    ],
+    "writeAllow": [
+      "compliance/reports/positions/**",
+      "compliance/reports/transactions/**",
+      "compliance/reports/13f/**",
+      "compliance/reports/form-pf/**",
+      "compliance/reports/focus/**"
+    ],
+    "writeDeny": [
+      "positions/**",
+      "ops-fabric/**",
+      "trade-sentinel/**",
+      "alpha-engine/**",
+      "risk-compass/**",
+      "compliance/filings/**",
+      "**"
+    ]
+  },
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "node compliance/reporters/emir-tr-generator *",
+        "node compliance/reporters/mifir-rts25-generator *",
+        "node compliance/reporters/cftc-large-trader *",
+        "node compliance/reporters/sec-13f-generator *",
+        "node compliance/reporters/finra-focus-generator *"
+      ],
+      "deny": [
+        "* modify-position *",
+        "* book-trade *",
+        "* update-settlement *",
+        "rm *"
+      ]
+    },
+    "edit": {
+      "allowPaths": ["compliance/reports/**"],
+      "denyPaths": [
+        "positions/**",
+        "ops-fabric/**",
+        "trade-sentinel/**",
+        "compliance/filings/**"
+      ]
+    }
+  },
+  "riskBudget": {
+    "sessionLimit": 200,
+    "decayRate": 0.1,
+    "highRiskThreshold": 150,
+    "freezeOnBreach": true
+  },
+  "classification": {
+    "euAiActRiskLevel": "SIGNIFICANT",
+    "dataClassification": "CONFIDENTIAL",
+    "regulatoryFrameworks": ["EMIR-Art.9", "MiFIR-RTS25", "SEC-13F", "FINRA-FOCUS"]
+  }
+}

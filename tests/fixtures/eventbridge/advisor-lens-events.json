@@ -1,0 +1,126 @@
+[
+  {
+    "version": "0",
+    "id": "c5d6e7f8-a9b0-1234-cdef-345678901234",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T10:15:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/advisor-lens/suitability-checker"
+    ],
+    "detail": {
+      "recordId": "aud-c5d6e7f8a9b0",
+      "timestamp": "2026-03-20T10:15:00.000Z",
+      "agentId": "suitability-checker",
+      "application": "advisor-lens",
+      "model": "suitability-checker-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "suitability-check --client C-1001 --product EQUITY-GROWTH-FUND",
+        "riskScore": 8,
+        "reason": null
+      },
+      "auditCategory": "suitability-assessment",
+      "eventType": "determination-suitable",
+      "severity": "low",
+      "impactArea": "client-protection",
+      "compliance": [
+        {
+          "framework": "MiFID II",
+          "articles": [{ "ref": "Art.25", "status": "compliant", "scope": "suitability-assessment" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "MiFID II Art.25(6) — suitability records" },
+      "context": {
+        "suitabilityDetermination": "suitable",
+        "clientId": "C-1001",
+        "instrumentId": "EQUITY-GROWTH-FUND"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "d6e7f8a9-b0c1-2345-defa-456789012345",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T10:20:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/advisor-lens/proposal-generator"
+    ],
+    "detail": {
+      "recordId": "aud-d6e7f8a9b0c1",
+      "timestamp": "2026-03-20T10:20:00.000Z",
+      "agentId": "proposal-generator",
+      "application": "advisor-lens",
+      "model": "proposal-generator-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "write advisory/proposals/draft/P-2003",
+        "riskScore": 98,
+        "reason": "Art.52 AI disclosure absent — write blocked"
+      },
+      "auditCategory": "art52-disclosure-enforcement",
+      "eventType": "disclosure-missing-blocked",
+      "severity": "critical",
+      "impactArea": "ai-transparency",
+      "compliance": [
+        {
+          "framework": "EU AI Act",
+          "articles": [{ "ref": "Art.52", "status": "violation-blocked", "scope": "ai-transparency" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "EU AI Act Art.26(5) — compliance evidence for high-risk AI" },
+      "context": {
+        "art52DisclosureMissing": true,
+        "proposalId": "P-2003"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "e7f8a9b0-c1d2-3456-efab-567890123456",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T11:00:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/advisor-lens/client-reporter"
+    ],
+    "detail": {
+      "recordId": "aud-e7f8a9b0c1d2",
+      "timestamp": "2026-03-20T11:00:00.000Z",
+      "agentId": "client-reporter",
+      "application": "advisor-lens",
+      "model": "client-reporter-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "read portfolios/C-3002",
+        "riskScore": 98,
+        "reason": "Cross-client data access — client-reporter assigned to C-3001, attempted read of C-3002"
+      },
+      "auditCategory": "gdpr-breach-assessment",
+      "eventType": "cross-client-access-blocked",
+      "severity": "critical",
+      "impactArea": "data-protection",
+      "compliance": [
+        {
+          "framework": "GDPR",
+          "articles": [
+            { "ref": "Art.5(1)(f)", "status": "breach-assessment-triggered", "scope": "integrity-confidentiality" },
+            { "ref": "Art.33", "status": "breach-assessment-required", "scope": "notification" }
+          ]
+        }
+      ],
+      "retention": { "years": 10, "reason": "GDPR Art.33(5) — breach notification records" },
+      "context": {
+        "crossClientAccessAttempt": true,
+        "clientId": "C-3001"
+      }
+    }
+  }
+]

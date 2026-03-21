@@ -1,0 +1,75 @@
+{
+  "type": "bundle",
+  "id": "bundle--of-06f7a8b9-c0d1-2345-fabc-345678901234",
+  "spec_version": "2.1",
+  "created": "2026-03-20T12:00:00.000Z",
+  "modified": "2026-03-20T12:00:00.000Z",
+  "objects": [
+    {
+      "type": "identity",
+      "id": "identity--sentinel-ops-soe",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "name": "Sentinel-Ops SOE Engine",
+      "identity_class": "system",
+      "description": "YadriWorks Sentinel-Ops Safe Operating Envelope enforcement system"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--of-settlement-compliant",
+      "spec_version": "2.1",
+      "created": "2026-03-20T16:30:00.000Z",
+      "modified": "2026-03-20T16:30:00.000Z",
+      "name": "OpsFabric Settlement Batch — Compliant",
+      "description": "settlement-processor processed BATCH-20260320 (150 trades) within T+1 deadline. CSDR Art.7 settlement discipline maintained.",
+      "indicator_types": ["benign"],
+      "pattern": "[x-soe-event:agent_id = 'settlement-processor' AND x-soe-event:decision = 'allow' AND x-soe-event:audit_category = 'settlement-processing']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T16:30:00.000Z",
+      "labels": ["soe:green", "csdr-art7", "settlement-discipline", "t-plus-1"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--of-nav-publish-blocked",
+      "spec_version": "2.1",
+      "created": "2026-03-20T17:00:00.000Z",
+      "modified": "2026-03-20T17:00:00.000Z",
+      "name": "OpsFabric NAV Publication — Blocked",
+      "description": "nav-calculator attempted to write directly to nav/published/FUND-001/. SOE blocked — NAV publication requires dual approval per Investment Company Act Rule 22c-1.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'nav-calculator' AND x-soe-event:decision = 'deny' AND x-soe-event:tool_name LIKE 'write nav/published/%']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T17:00:00.000Z",
+      "labels": ["soe:critical", "investment-company-act-22c-1", "nav-integrity", "dual-approval"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "observed-data",
+      "id": "observed-data--of-20260320",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "first_observed": "2026-03-20T00:00:00.000Z",
+      "last_observed": "2026-03-20T23:59:59.999Z",
+      "number_observed": 204,
+      "object_refs": [
+        "indicator--of-settlement-compliant",
+        "indicator--of-nav-publish-blocked"
+      ],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--of-nav-blocked-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--of-nav-publish-blocked",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "SOE gate blocked unauthorized NAV publication — Investment Company Act Rule 22c-1 dual approval enforced"
+    }
+  ]
+}

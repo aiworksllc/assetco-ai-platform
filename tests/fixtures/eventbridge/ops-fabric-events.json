@@ -1,0 +1,83 @@
+[
+  {
+    "version": "0",
+    "id": "d4e5f6a7-b8c9-0123-defa-234567890123",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T16:30:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/ops-fabric/settlement-processor"
+    ],
+    "detail": {
+      "recordId": "aud-d4e5f6a7b8c9",
+      "timestamp": "2026-03-20T16:30:00.000Z",
+      "agentId": "settlement-processor",
+      "application": "ops-fabric",
+      "model": "settlement-processor-audit-v1",
+      "event": {
+        "decision": "allow",
+        "toolName": "settlement-engine process --batch BATCH-20260320",
+        "riskScore": 12,
+        "reason": null
+      },
+      "auditCategory": "settlement-processing",
+      "eventType": "settlement-batch-processed",
+      "severity": "low",
+      "impactArea": "operations",
+      "compliance": [
+        {
+          "framework": "CSDR",
+          "articles": [{ "ref": "Art.7", "status": "compliant", "scope": "settlement-discipline" }]
+        }
+      ],
+      "retention": { "years": 7, "reason": "CSDR Art.7 — settlement processing records" },
+      "context": {
+        "batchId": "BATCH-20260320",
+        "tradeCount": 150,
+        "settlementCycle": "T+1"
+      }
+    }
+  },
+  {
+    "version": "0",
+    "id": "e5f6a7b8-c9d0-1234-efab-345678901234",
+    "detail-type": "SOE Audit Event",
+    "source": "sentinel-ops.chronicle",
+    "account": "123456789012",
+    "time": "2026-03-20T17:00:00.000Z",
+    "region": "us-east-1",
+    "resources": [
+      "arn:aws:sentinel-ops:us-east-1:123456789012:agent/ops-fabric/nav-calculator"
+    ],
+    "detail": {
+      "recordId": "aud-e5f6a7b8c9d0",
+      "timestamp": "2026-03-20T17:00:00.000Z",
+      "agentId": "nav-calculator",
+      "application": "ops-fabric",
+      "model": "nav-calculator-audit-v1",
+      "event": {
+        "decision": "deny",
+        "toolName": "write nav/published/FUND-001/2026-03-20",
+        "riskScore": 95,
+        "reason": "NAV publication requires dual approval — nav-calculator writes to nav/calculated/ only"
+      },
+      "auditCategory": "nav-integrity",
+      "eventType": "nav-publish-blocked",
+      "severity": "critical",
+      "impactArea": "fund-operations",
+      "compliance": [
+        {
+          "framework": "Investment Company Act",
+          "articles": [{ "ref": "Rule-22c-1", "status": "violation-blocked", "scope": "nav-publication" }]
+        }
+      ],
+      "retention": { "years": 10, "reason": "Investment Company Act — NAV integrity violation evidence" },
+      "context": {
+        "navPublishAttempt": true,
+        "fundId": "FUND-001"
+      }
+    }
+  }
+]

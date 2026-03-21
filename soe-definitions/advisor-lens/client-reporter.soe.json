@@ -1,0 +1,87 @@
+{
+  "agentId": "client-reporter",
+  "application": "advisor-lens",
+  "version": "1.0",
+  "description": "Generates periodic client performance reports and regulatory disclosures. Mandatory Art.52 AI disclosure enforced on every output.",
+  "euAiActRiskLevel": "HIGH",
+  "enforcement": {
+    "mode": "full",
+    "failBehavior": "DENY",
+    "auditAll": true
+  },
+  "identity": {
+    "role": "ClientReportingAgent",
+    "allowedPersonas": ["client-reporter"],
+    "authorityLevel": "read-report-only",
+    "environmentScope": ["production", "uat"],
+    "clientFacing": false
+  },
+  "dataAccess": {
+    "readAllow": [
+      "portfolios/{clientId}/**",
+      "performance/{clientId}/**",
+      "attribution/{clientId}/**",
+      "products/fee-schedules/**",
+      "products/sfdr-classifications/**",
+      "products/pai-indicators/**",
+      "research/published/**",
+      "market-data/benchmarks/**",
+      "regulatory/mifid2-cost-disclosure-templates/**",
+      "regulatory/sfdr-disclosure-templates/**"
+    ],
+    "readDeny": [
+      "portfolios/{otherClientId}/**",
+      "performance/{otherClientId}/**",
+      "crm/clients/**/ssn",
+      "crm/clients/**/tax-id",
+      "crm/clients/**/bank-accounts/**",
+      "trading/executions/**",
+      "orders/order-routing/**",
+      "research/pre-publication/**",
+      "research/drafts/**",
+      "research/embargoed/**"
+    ],
+    "writeAllow": [
+      "advisory/reports/{clientId}/**"
+    ],
+    "writeDeny": [
+      "advisory/reports/{otherClientId}/**",
+      "crm/**",
+      "portfolios/**",
+      "orders/**",
+      "trading/**",
+      "advisory/proposals/**"
+    ]
+  },
+  "toolActions": {
+    "bash": {
+      "allow": [],
+      "deny": ["*"]
+    },
+    "email": {
+      "allow": [],
+      "deny": ["*"]
+    }
+  },
+  "contentGuardrails": {
+    "art52DisclosureRequired": true,
+    "art52DisclosureText": "This report was generated with AI assistance and reviewed by your advisor.",
+    "art52EnforcementMode": "block-on-missing",
+    "clientIsolation": {
+      "enabled": true,
+      "enforcement": "task-scoped",
+      "onCrossClientAttempt": "block-and-critical-alert"
+    }
+  },
+  "riskBudget": {
+    "dailyLimit": 300,
+    "escalateAt": 200,
+    "freezeOnBreach": true,
+    "resetSchedule": "00:00 UTC"
+  },
+  "classification": {
+    "euAiActRiskLevel": "HIGH",
+    "dataClassification": "CONFIDENTIAL",
+    "regulatoryFrameworks": ["EU-AI-Act-Art.52", "MiFID-II-Art.24", "GDPR-Art.5", "GDPR-Art.22", "SFDR"]
+  }
+}

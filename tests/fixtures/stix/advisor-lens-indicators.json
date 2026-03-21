@@ -1,0 +1,102 @@
+{
+  "type": "bundle",
+  "id": "bundle--al-05e6f7a8-b9c0-1234-efab-234567890123",
+  "spec_version": "2.1",
+  "created": "2026-03-20T12:00:00.000Z",
+  "modified": "2026-03-20T12:00:00.000Z",
+  "objects": [
+    {
+      "type": "identity",
+      "id": "identity--sentinel-ops-soe",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "name": "Sentinel-Ops SOE Engine",
+      "identity_class": "system",
+      "description": "YadriWorks Sentinel-Ops Safe Operating Envelope enforcement system"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--al-suitability-compliant",
+      "spec_version": "2.1",
+      "created": "2026-03-20T10:15:00.000Z",
+      "modified": "2026-03-20T10:15:00.000Z",
+      "name": "AdvisorLens Suitability Assessment — Compliant",
+      "description": "suitability-checker evaluated C-1001 for EQUITY-GROWTH-FUND. Determination: suitable. MiFID II Art.25 suitability assessment compliant.",
+      "indicator_types": ["benign"],
+      "pattern": "[x-soe-event:agent_id = 'suitability-checker' AND x-soe-event:decision = 'allow' AND x-soe-event:event_type = 'determination-suitable']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T10:15:00.000Z",
+      "labels": ["soe:green", "mifid-ii-art25", "suitability-assessment", "client-protection"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--al-art52-disclosure-blocked",
+      "spec_version": "2.1",
+      "created": "2026-03-20T10:20:00.000Z",
+      "modified": "2026-03-20T10:20:00.000Z",
+      "name": "AdvisorLens Art.52 AI Disclosure Missing — Blocked",
+      "description": "proposal-generator attempted to write proposal P-2003 without AI disclosure statement. SOE blocked per EU AI Act Art.52 transparency requirement.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'proposal-generator' AND x-soe-event:decision = 'deny' AND x-soe-event:event_type = 'disclosure-missing-blocked']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T10:20:00.000Z",
+      "labels": ["soe:critical", "eu-ai-act-art52", "ai-transparency", "disclosure-enforcement"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "indicator",
+      "id": "indicator--al-cross-client-access-blocked",
+      "spec_version": "2.1",
+      "created": "2026-03-20T11:00:00.000Z",
+      "modified": "2026-03-20T11:00:00.000Z",
+      "name": "AdvisorLens Cross-Client Data Access — Blocked",
+      "description": "client-reporter assigned to C-3001 attempted to read portfolios/C-3002. SOE enforced client isolation per GDPR Art.5(1)(f) integrity-confidentiality.",
+      "indicator_types": ["anomalous-activity"],
+      "pattern": "[x-soe-event:agent_id = 'client-reporter' AND x-soe-event:decision = 'deny' AND x-soe-event:event_type = 'cross-client-access-blocked']",
+      "pattern_type": "stix",
+      "valid_from": "2026-03-20T11:00:00.000Z",
+      "labels": ["soe:critical", "gdpr-art5", "gdpr-art33", "client-isolation", "data-protection", "breach-assessment"],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "observed-data",
+      "id": "observed-data--al-20260320",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "first_observed": "2026-03-20T00:00:00.000Z",
+      "last_observed": "2026-03-20T23:59:59.999Z",
+      "number_observed": 92,
+      "object_refs": [
+        "indicator--al-suitability-compliant",
+        "indicator--al-art52-disclosure-blocked",
+        "indicator--al-cross-client-access-blocked"
+      ],
+      "created_by_ref": "identity--sentinel-ops-soe"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--al-art52-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--al-art52-disclosure-blocked",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "SOE gate blocked proposal without AI disclosure — EU AI Act Art.52 transparency enforced"
+    },
+    {
+      "type": "relationship",
+      "id": "relationship--al-cross-client-indicates",
+      "spec_version": "2.1",
+      "created": "2026-03-20T12:00:00.000Z",
+      "modified": "2026-03-20T12:00:00.000Z",
+      "relationship_type": "indicates",
+      "source_ref": "indicator--al-cross-client-access-blocked",
+      "target_ref": "identity--sentinel-ops-soe",
+      "description": "SOE gate blocked cross-client data access — GDPR Art.5(1)(f) client isolation enforced"
+    }
+  ]
+}

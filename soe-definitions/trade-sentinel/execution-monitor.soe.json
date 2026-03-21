@@ -1,0 +1,128 @@
+{
+  "agentId": "trade-sentinel/execution-monitor",
+  "version": "1.1.0",
+  "application": "TradeSentinel",
+  "classification": "HIGH_RISK",
+  "regulatoryFrameworks": ["MAR_ART12", "MAR_ART16", "MIFID_II_ART27", "EU_AI_ACT_ART14"],
+
+  "identity": {
+    "role": "ExecutionSurveillance",
+    "authorityLevel": "alert-only",
+    "environmentScope": ["production", "uat"],
+    "fiduciaryNote": "Alert-only authority. Cannot modify orders. Writes only to alerts, monitoring, and STR draft directories."
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "trading/orders/active/**",
+      "trading/orders/staged/**",
+      "trading/orders/executed/**",
+      "trading/orders/incoming/**",
+      "trading/fills/**",
+      "trading/execution-data/**",
+      "market-data/live/**",
+      "market-data/quotes/**",
+      "market-data/order-book/**",
+      "market-data/historical/**",
+      "venue-data/historical-fill-stats/**",
+      "compliance-shield/str-templates/**",
+      "trading/benchmarks/**"
+    ],
+    "readDeny": [
+      "research-nexus/pre-publication/**",
+      "research-nexus/draft/**",
+      "research-nexus/analyst-workspace/**",
+      "research-nexus/pending-approval/**",
+      "research-nexus/staging/**",
+      "client-data/pii/**",
+      "client-data/kyc/**",
+      "client-data/contact/**",
+      "alpha-engine/internal-signals/**",
+      "alpha-engine/model-weights/**",
+      "deal-room/**",
+      "compliance/reports/**",
+      "audit/**"
+    ],
+    "writeAllow": [
+      "trading/alerts/**",
+      "trading/monitoring/**",
+      "compliance-shield/str-drafts/**"
+    ],
+    "writeDeny": [
+      "trading/orders/**",
+      "trading/fills/**",
+      "positions/**",
+      "client-data/**",
+      "compliance/reports/**",
+      "audit/**",
+      "research-nexus/**",
+      "alpha-engine/**",
+      "risk-compass/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "alert-service post --channel compliance-desk --severity *",
+        "alert-service post --channel trading-desk --severity *",
+        "compliance-shield create-str-draft --pattern * --orders *",
+        "compliance-shield create-escalation --type market-abuse --details *",
+        "benchmark-calculator vwap --instrument * --from * --to *",
+        "benchmark-calculator arrival-price --instrument * --timestamp *",
+        "benchmark-calculator implementation-shortfall --order-id *",
+        "anomaly-detector run --pattern * --orders *"
+      ],
+      "deny": [
+        "flexTrade *",
+        "bloomberg aim-submit *",
+        "bloomberg aim-modify *",
+        "bloomberg aim-cancel *",
+        "exchange-direct-access *",
+        "order-router trigger *",
+        "rm *",
+        "curl * research-nexus *",
+        "psql *",
+        "DROP *",
+        "DELETE *"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "trading/alerts/**",
+        "trading/monitoring/**",
+        "compliance-shield/str-drafts/**"
+      ],
+      "denyPaths": [
+        "trading/orders/**",
+        "trading/fills/**",
+        "positions/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 500,
+    "perActionCost": {
+      "alert_low": 1,
+      "alert_medium": 3,
+      "alert_high": 10,
+      "str_draft_created": 20,
+      "escalation_created": 25,
+      "chinese_wall_violation_attempt": 500
+    },
+    "freezeOnBreach": false,
+    "escalateAt": 400,
+    "resetCadence": "market-open"
+  },
+
+  "auditRequirements": {
+    "logLevel": "FULL",
+    "retentionYears": 7,
+    "immutable": true,
+    "requiredFields": [
+      "alertId", "alertType", "ordersInvolved",
+      "instrumentId", "severity", "patternDetail"
+    ]
+  }
+}

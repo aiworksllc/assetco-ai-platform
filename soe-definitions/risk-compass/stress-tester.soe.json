@@ -1,0 +1,86 @@
+{
+  "id": "riskcompass-stress-tester",
+  "version": "1.0.0",
+  "description": "SOE for stress-tester agent. Runs predefined and custom stress scenarios (2008 GFC, rate shocks, credit spread widening, EM currency crisis).",
+  "inherits": "riskcompass-base",
+  "identity": {
+    "agentName": "stress-tester",
+    "application": "RiskCompass",
+    "role": "RiskAnalytics-Stress",
+    "allowedPersonas": ["stress-tester"],
+    "authorityLevel": "read-only-risk-analytics",
+    "environmentScope": ["production", "uat"],
+    "euAiActClass": "HIGH_RISK",
+    "srr117ModelId": "MDL-STRESS-001"
+  },
+  "dataAccess": {
+    "readAllow": [
+      "bloomberg-aim/positions/**",
+      "bloomberg-aim/instruments/**",
+      "bloomberg-aim/factor-sensitivities/**",
+      "bloomberg-aim/liquidity-profiles/**",
+      "bloomberg-aim/bid-ask-spreads/**",
+      "bloomberg-aim/adv-data/**",
+      "aladdin/factor-loadings/**",
+      "aladdin/stress-factor-mappings/**",
+      "aladdin/duration-analytics/**",
+      "aladdin/spread-dv01/**",
+      "snowflake/historical-scenario-paths/**",
+      "snowflake/macro-factor-returns/**",
+      "snowflake/liquidity-historical/**",
+      "alphaengine/model-portfolios/positions/**",
+      "tradesentinel/executed-trades/**",
+      "opsfabric/settled-positions/**",
+      "riskcompass/stress-scenario-library/**",
+      "riskcompass/scenario-parameters/**"
+    ],
+    "readDeny": [
+      "clients/**",
+      "advisorlens/**",
+      "client-pii/**",
+      "research-nexus/**",
+      "deal-room/**",
+      "private-markets/deal-files/**",
+      "tradesentinel/order-routing/**",
+      "tradesentinel/pending-orders/**",
+      "bloomberg-aim/pending-orders/**",
+      "bloomberg-aim/order-management/**",
+      "**/.env",
+      "**/credentials*",
+      "**/secrets*"
+    ],
+    "writeAllow": [],
+    "writeDeny": ["**"]
+  },
+  "toolActions": {
+    "allow": [
+      "bloomberg_aim.read_positions",
+      "bloomberg_aim.read_instruments",
+      "bloomberg_aim.read_factor_sensitivities",
+      "bloomberg_aim.read_liquidity_profiles",
+      "aladdin.read_factor_loadings",
+      "aladdin.read_stress_mappings",
+      "snowflake.query_historical_scenarios",
+      "snowflake.query_macro_factors",
+      "snowflake.query_liquidity",
+      "riskcompass.run_stress_scenario",
+      "riskcompass.publish_stress_report",
+      "riskcompass.publish_alert",
+      "chronicle.log_stress_execution",
+      "dashboard.write_stress_results",
+      "notification.send_stress_alert"
+    ],
+    "bash": { "allow": [], "deny": ["*"] },
+    "edit": { "allowPaths": [], "denyPaths": ["**"] }
+  },
+  "riskBudget": {
+    "dailyLimit": 100,
+    "hourlyLimit": 20,
+    "onDemandBurst": 5
+  },
+  "rateLimiting": {
+    "backend": "HotCache",
+    "windowSeconds": 3600,
+    "maxCallsPerWindow": 20
+  }
+}

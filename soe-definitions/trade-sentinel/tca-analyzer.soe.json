@@ -1,0 +1,128 @@
+{
+  "agentId": "trade-sentinel/tca-analyzer",
+  "version": "1.0.0",
+  "application": "TradeSentinel",
+  "classification": "HIGH_RISK",
+  "regulatoryFrameworks": ["MIFID_II_ART27", "MIFID_II_RTS28", "SR_11_7"],
+
+  "identity": {
+    "role": "ComplianceAnalyst",
+    "authorityLevel": "read-only-post-trade",
+    "environmentScope": ["production", "uat"],
+    "fiduciaryNote": "Most restricted TradeSentinel agent. Read-only against all trading systems. Writes only to compliance/reports/tca/**. Runs outside market hours."
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "trading/orders/executed/**",
+      "trading/orders/cancelled/**",
+      "trading/fills/historical/**",
+      "trading/execution-data/historical/**",
+      "trading/benchmarks/**",
+      "venue-data/fee-schedules/**",
+      "venue-data/historical-fill-stats/**",
+      "market-data/historical/**",
+      "compliance/rts28-templates/**",
+      "compliance/rts27-venue-data/**",
+      "compliance/reports/tca/**"
+    ],
+    "readDeny": [
+      "trading/orders/active/**",
+      "trading/orders/staged/**",
+      "trading/orders/incoming/**",
+      "trading/fills/live/**",
+      "market-data/live/**",
+      "research-nexus/**",
+      "client-data/**",
+      "positions/**",
+      "alpha-engine/**",
+      "risk-compass/**",
+      "deal-room/**",
+      "audit/**"
+    ],
+    "writeAllow": [
+      "compliance/reports/tca/**"
+    ],
+    "writeDeny": [
+      "trading/**",
+      "positions/**",
+      "client-data/**",
+      "alpha-engine/**",
+      "risk-compass/**",
+      "research-nexus/**",
+      "audit/**",
+      "compliance/reports/str/**",
+      "compliance/reports/breach/**",
+      "compliance/reports/position/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "tca-engine compute --order-id *",
+        "tca-engine compute-batch --date-range *",
+        "benchmark-calculator vwap --instrument * --historical *",
+        "benchmark-calculator arrival-price --instrument * --historical *",
+        "benchmark-calculator implementation-shortfall --historical *",
+        "rts28-reporter generate --quarter * --asset-class *",
+        "rts27-consumer fetch --venue * --period *",
+        "report-publisher stage --report-path compliance/reports/tca/*"
+      ],
+      "deny": [
+        "flexTrade *",
+        "bloomberg aim-submit *",
+        "bloomberg aim-modify *",
+        "bloomberg aim-cancel *",
+        "order-router *",
+        "execution-monitor *",
+        "exchange-direct-access *",
+        "alert-service *",
+        "compliance-shield create-str-draft *",
+        "compliance-shield create-escalation *",
+        "rm *",
+        "curl *",
+        "psql *",
+        "DROP *",
+        "DELETE *",
+        "UPDATE *",
+        "INSERT *"
+      ]
+    },
+    "edit": {
+      "allowPaths": ["compliance/reports/tca/**"],
+      "denyPaths": [
+        "trading/**",
+        "positions/**",
+        "client-data/**",
+        "audit/**",
+        "compliance/reports/str/**",
+        "compliance/reports/breach/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 100,
+    "perActionCost": {
+      "report_generated": 5,
+      "batch_compute_run": 10,
+      "chinese_wall_violation_attempt": 500,
+      "separation_of_duties_violation_attempt": 500
+    },
+    "freezeOnBreach": true,
+    "escalateAt": 70,
+    "resetCadence": "market-open"
+  },
+
+  "auditRequirements": {
+    "logLevel": "FULL",
+    "retentionYears": 7,
+    "immutable": true,
+    "requiredFields": [
+      "reportId", "quarter", "assetClass",
+      "venuesCovered", "ordersAnalysed",
+      "avgSlippageVsVwap", "avgSlippageVsArrival"
+    ]
+  }
+}

@@ -1,0 +1,94 @@
+{
+  "agentId": "alpha-engine/rebalancer",
+  "version": "1.1.0",
+  "application": "AlphaEngine",
+  "classification": "HIGH_RISK",
+  "regulatoryFrameworks": ["SEC_ADVISERS_ACT", "ERISA", "MIFID_II_ART27"],
+
+  "identity": {
+    "role": "RebalancingService",
+    "authorityLevel": "trade-list-generation-only",
+    "fiduciaryNote": "Rebalancer generates trade lists for TradeSentinel execution. It has no execution authority. Trade lists are subject to PM review before execution is triggered."
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "portfolios/live/**",
+      "portfolios/optimized/**",
+      "portfolios/tax-lots/**",
+      "data/market/transaction-costs/**",
+      "mandates/ips/**",
+      "mandates/erisa/**"
+    ],
+    "readDeny": [
+      "research-nexus/pre-publication/**",
+      "research-nexus/staging/**",
+      "clients/pii/**",
+      "trading/orders/**",
+      "trading/execution/**",
+      "deal-room/**"
+    ],
+    "writeAllow": [
+      "portfolios/rebalance/**",
+      "trading/trade-lists/**"
+    ],
+    "writeDeny": [
+      "trading/orders/**",
+      "trading/execution/**",
+      "portfolios/live/**",
+      "portfolios/optimized/**",
+      "compliance/**",
+      "clients/**",
+      "mandates/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "python rebalancer/compute-drift.py *",
+        "python rebalancer/generate-trade-list.py *"
+      ],
+      "deny": [
+        "curl *oms*",
+        "curl *execution*",
+        "fix.session.submit *",
+        "rm -rf *"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "portfolios/rebalance/**",
+        "trading/trade-lists/**"
+      ],
+      "denyPaths": [
+        "trading/orders/**",
+        "portfolios/live/**",
+        "portfolios/optimized/**",
+        "compliance/**",
+        "clients/**"
+      ]
+    }
+  },
+
+  "riskBudget": {
+    "dailyLimit": 300,
+    "perCallCost": {
+      "drift-check": 1,
+      "trade-list-generation": 5
+    },
+    "breachAction": "block-and-escalate",
+    "resetCadence": "daily-00:00-UTC"
+  },
+
+  "auditRequirements": {
+    "logLevel": "FULL",
+    "retentionYears": 7,
+    "immutable": true,
+    "requiredFields": [
+      "mandateId", "rebalanceRunId", "timestamp",
+      "driftMeasurement", "driftThreshold", "triggerReason",
+      "tradeListId", "estimatedTransactionCost"
+    ]
+  }
+}

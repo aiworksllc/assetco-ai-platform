@@ -1,0 +1,115 @@
+{
+  "id": "opsfabric-nav-calculator",
+  "version": "1.0.0",
+  "description": "SOE for nav-calculator agent. Validates NAV pricing inputs, computes preliminary NAV, flags stale prices and Level 2/3 instruments. CANNOT publish NAV — dual-approval gate enforced at SOE level.",
+  "identity": {
+    "agentName": "nav-calculator",
+    "application": "OpsFabric",
+    "role": "NAVCalculation",
+    "allowedPersonas": ["nav-calculator"],
+    "authorityLevel": "preliminary-nav-only",
+    "environmentScope": ["production"],
+    "euAiActClass": "LIMITED",
+    "humanSupervisor": "maria.torres@assetco.com"
+  },
+  "dataAccess": {
+    "readAllow": [
+      "operations/positions/**",
+      "eagle-pace/positions/**",
+      "eagle-pace/fund-structure/**",
+      "eagle-pace/fee-schedules/**",
+      "eagle-pace/corporate-actions/**",
+      "pricing/bloomberg/**",
+      "pricing/ice-bondpoint/**",
+      "pricing/bval/**",
+      "pricing/evaluated/**",
+      "operations/nav/preliminary/**",
+      "operations/nav/pricing-exceptions/**"
+    ],
+    "readDeny": [
+      "**/client-pii/**",
+      "**/client-accounts/**",
+      "trading/**",
+      "operations/trades/**",
+      "alpha-engine/**",
+      "research/**",
+      "operations/settlement/**"
+    ],
+    "writeAllow": [
+      "operations/nav/preliminary/**"
+    ],
+    "writeDeny": [
+      "operations/nav/published/**",
+      "operations/positions/**",
+      "eagle-pace/**",
+      "pricing/**",
+      "custodian-records/**",
+      "trading/**",
+      "operations/settlement/**",
+      "operations/reconciliation/**"
+    ]
+  },
+  "toolActions": {
+    "computation": {
+      "allow": [
+        "calculate-nav --fund * --date *",
+        "validate-pricing --isin * --source *",
+        "flag-stale-price --isin * --age-hours *",
+        "classify-fair-value-level --isin *",
+        "apply-fee-accrual --fund * --date *",
+        "apply-corporate-action --isin * --effective-date *",
+        "generate-preliminary-nav-package --fund *",
+        "submit-to-review-queue --fund * --nav-date *"
+      ],
+      "deny": [
+        "publish-nav *",
+        "approve-nav *",
+        "distribute-nav *",
+        "submit-nav-to-clients *",
+        "override-pricing *",
+        "delete-pricing-exception *",
+        "modify-position *"
+      ]
+    },
+    "bash": {
+      "allow": [
+        "fetch-pricing --source bloomberg --isin *",
+        "fetch-pricing --source ice --isin *",
+        "fetch-pricing --source bval --isin *",
+        "compute-accrued-interest --isin * --settlement-date *"
+      ],
+      "deny": [
+        "publish *",
+        "distribute *",
+        "rm *",
+        "UPDATE *",
+        "DELETE *"
+      ]
+    },
+    "edit": { "allowPaths": [], "denyPaths": ["**"] }
+  },
+  "riskBudget": {
+    "dailyLimit": 300,
+    "hourlyLimit": 40,
+    "onDemandBurst": 10,
+    "resetSchedule": "daily-at-midnight-ET",
+    "escalateAt": 270,
+    "hardLimitAction": "DENY_AND_ESCALATE"
+  },
+  "rateLimiting": {
+    "backend": "HotCache",
+    "windowSeconds": 300,
+    "maxCallsPerWindow": 40
+  },
+  "navPublicationGate": {
+    "enabled": true,
+    "description": "NAV publication requires dual human approval. nav-calculator cannot write to operations/nav/published/** under any circumstance.",
+    "requiredApprovals": [
+      {"role": "FundAccountant", "minCount": 1},
+      {"role": "OperationsManager", "minCount": 1}
+    ],
+    "approvalLogging": "Chronicle — append-only, with approver identity and timestamp",
+    "violationSeverity": "CRITICAL",
+    "violationEscalation": ["maria.torres@assetco.com", "security@assetco.com"]
+  }
+}

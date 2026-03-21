@@ -1,0 +1,108 @@
+{
+  "id": "riskcompass-limit-enforcer",
+  "version": "1.0.0",
+  "description": "SOE for limit-enforcer agent. Monitors risk limits, triggers alerts/escalations on breach. Alert-only authority — CANNOT take trading or position actions.",
+  "inherits": "riskcompass-base",
+  "identity": {
+    "agentName": "limit-enforcer",
+    "application": "RiskCompass",
+    "role": "RiskAnalytics-LimitEnforcement",
+    "allowedPersonas": ["limit-enforcer"],
+    "authorityLevel": "alert-only-no-trading-authority",
+    "environmentScope": ["production", "uat"],
+    "euAiActClass": "HIGH_RISK"
+  },
+  "dataAccess": {
+    "readAllow": [
+      "riskcompass/limits-config/**",
+      "riskcompass/var-outputs/**",
+      "riskcompass/exposure-outputs/**",
+      "riskcompass/leverage-metrics/**",
+      "riskcompass/stress-outputs/**",
+      "riskcompass/breach-history/**",
+      "riskcompass/aifmd-leverage-limits/**",
+      "bloomberg-aim/positions/summary/**",
+      "aladdin/regulatory-limits/**",
+      "compliance-shield/limit-config/**"
+    ],
+    "readDeny": [
+      "bloomberg-aim/positions/detail/**",
+      "bloomberg-aim/blotter/**",
+      "bloomberg-aim/order-management/**",
+      "bloomberg-aim/pending-orders/**",
+      "tradesentinel/**",
+      "alphaengine/**",
+      "opsfabric/**",
+      "clients/**",
+      "advisorlens/**",
+      "client-pii/**",
+      "research-nexus/**",
+      "deal-room/**",
+      "private-markets/**",
+      "snowflake/**",
+      "aladdin/risk-factors/**",
+      "aladdin/covariance-matrices/**",
+      "**/.env",
+      "**/credentials*",
+      "**/secrets*"
+    ],
+    "writeAllow": [],
+    "writeDeny": ["**"]
+  },
+  "toolActions": {
+    "allow": [
+      "riskcompass.read_var_outputs",
+      "riskcompass.read_exposure_metrics",
+      "riskcompass.read_leverage_metrics",
+      "riskcompass.read_limits_config",
+      "riskcompass.generate_breach_event",
+      "riskcompass.generate_near_breach_alert",
+      "riskcompass.log_limit_check",
+      "notification.send_slack_alert",
+      "notification.send_email_alert",
+      "compliance_shield.publish_breach_event",
+      "chronicle.log_limit_breach",
+      "chronicle.log_near_breach",
+      "chronicle.log_limit_check_result",
+      "escalation.notify_cro",
+      "escalation.notify_risk_manager",
+      "escalation.notify_cco"
+    ],
+    "deny": [
+      "bloomberg_aim.*_order",
+      "bloomberg_aim.*_position",
+      "bloomberg_aim.cancel*",
+      "bloomberg_aim.modify*",
+      "bloomberg_aim.submit*",
+      "tradesentinel.*",
+      "alphaengine.submit*",
+      "opsfabric.write*",
+      "compliance_shield.write_record",
+      "compliance_shield.modify_record",
+      "compliance_shield.delete_record",
+      "riskcompass.modify_limit",
+      "riskcompass.override_limit",
+      "riskcompass.suppress_alert",
+      "riskcompass.delete_breach_event",
+      "bash",
+      "edit",
+      "write"
+    ],
+    "bash": { "allow": [], "deny": ["*"] },
+    "edit": { "allowPaths": [], "denyPaths": ["**"] }
+  },
+  "riskBudget": {
+    "dailyLimit": 300,
+    "hourlyLimit": 35,
+    "onDemandBurst": 15
+  },
+  "rateLimiting": {
+    "backend": "HotCache",
+    "windowSeconds": 300,
+    "maxCallsPerWindow": 35
+  },
+  "alertDeduplication": {
+    "enabled": true,
+    "windowSeconds": 300
+  }
+}

@@ -1,0 +1,187 @@
+{
+  "assessment-results": {
+    "uuid": "ar-02b3c4d5-e6f7-8901-bcde-f01234567890",
+    "metadata": {
+      "title": "AlphaEngine SOE Compliance Assessment",
+      "last-modified": "2026-03-20T12:00:00.000Z",
+      "version": "1.0.0",
+      "oscal-version": "1.1.2",
+      "roles": [
+        { "id": "assessor", "title": "Sentinel-Ops SOE Engine" },
+        { "id": "system-owner", "title": "AssetCo Portfolio Management" }
+      ],
+      "parties": [
+        {
+          "uuid": "party-assetco-pm",
+          "type": "organization",
+          "name": "AssetCo Global Asset Management — Portfolio Management"
+        },
+        {
+          "uuid": "party-sentinel-ops",
+          "type": "organization",
+          "name": "YadriWorks Inc. — Sentinel-Ops"
+        }
+      ]
+    },
+    "import-ap": {
+      "href": "urn:sentinel-ops:assessment-plan:alpha-engine"
+    },
+    "local-definitions": {
+      "components": [
+        {
+          "uuid": "comp-portfolio-optimizer",
+          "type": "software",
+          "title": "portfolio-optimizer agent",
+          "description": "Proposes portfolio rebalancing. Cannot execute trades directly.",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "value": "soe-definitions/alpha-engine/portfolio-optimizer.soe.json" }
+          ]
+        },
+        {
+          "uuid": "comp-allocation-advisor",
+          "type": "software",
+          "title": "allocation-advisor agent",
+          "description": "Recommends asset allocation changes. Requires human approval gate.",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "value": "soe-definitions/alpha-engine/allocation-advisor.soe.json" }
+          ]
+        },
+        {
+          "uuid": "comp-rebalancer",
+          "type": "software",
+          "title": "rebalancer agent",
+          "description": "Executes approved rebalancing orders. Bounded by IPS concentration limits.",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "value": "soe-definitions/alpha-engine/rebalancer.soe.json" }
+          ]
+        },
+        {
+          "uuid": "comp-factor-analyst",
+          "type": "software",
+          "title": "factor-analyst agent",
+          "description": "Analyzes factor exposures. Read-only analytics.",
+          "props": [
+            { "name": "eu-ai-act-risk-class", "value": "HIGH_RISK" },
+            { "name": "soe-definition", "value": "soe-definitions/alpha-engine/factor-analyst.soe.json" }
+          ]
+        }
+      ]
+    },
+    "results": [
+      {
+        "uuid": "result-alpha-engine-20260320",
+        "title": "AlphaEngine Daily SOE Assessment — 2026-03-20",
+        "description": "Automated assessment of SOE enforcement for all AlphaEngine agents",
+        "start": "2026-03-20T00:00:00.000Z",
+        "end": "2026-03-20T23:59:59.999Z",
+        "findings": [
+          {
+            "uuid": "finding-ae-001",
+            "title": "Portfolio Optimization — Compliant",
+            "description": "portfolio-optimizer proposed quarterly rebalance for GROWTH-EQUITY. All operations within SOE read/write boundaries.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "sec-advisers-act-fiduciary",
+              "status": { "state": "satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-ae-001" }]
+          },
+          {
+            "uuid": "finding-ae-002",
+            "title": "Chinese Wall Violation — Blocked",
+            "description": "portfolio-optimizer attempted to read research-nexus/pre-publication/alpha-signals. SOE enforced MAR Art.10 information barrier.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "mar-art10-information-barrier",
+              "status": { "state": "not-satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-ae-002" }]
+          },
+          {
+            "uuid": "finding-ae-003",
+            "title": "Human Approval Gate — Enforced",
+            "description": "allocation-advisor attempted direct write to active allocations without ALLOCATION_PROPOSAL_APPROVED event. SOE blocked per EU AI Act Art.14.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "eu-ai-act-art14-human-oversight",
+              "status": { "state": "not-satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-ae-003" }]
+          },
+          {
+            "uuid": "finding-ae-004",
+            "title": "IPS Concentration Limits — Compliant",
+            "description": "rebalancer stayed within Investment Policy Statement concentration limits. Aggregate weight change 5% (threshold: 10%).",
+            "target": {
+              "type": "objective-id",
+              "target-id": "erisa-prudent-investor",
+              "status": { "state": "satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-ae-004" }]
+          },
+          {
+            "uuid": "finding-ae-005",
+            "title": "MiFID II Suitability — Compliant",
+            "description": "All optimization proposals include suitability rationale. Factor analysis read-only verified.",
+            "target": {
+              "type": "objective-id",
+              "target-id": "mifid-ii-art25-suitability",
+              "status": { "state": "satisfied" }
+            },
+            "related-observations": [{ "observation-uuid": "obs-ae-005" }]
+          }
+        ],
+        "observations": [
+          {
+            "uuid": "obs-ae-001",
+            "description": "Optimization run for GROWTH-EQUITY: 5% aggregate weight change, 60% IPS concentration proximity. Risk score: 18 (Green).",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-portfolio-optimizer", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-f6a7b8c9d0e1", "description": "Chronicle audit — optimization proposed" }
+            ]
+          },
+          {
+            "uuid": "obs-ae-002",
+            "description": "Chinese wall violation attempt: portfolio-optimizer tried to read pre-publication research. Risk score: 95 (Critical). Blocked by SOE gate.",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-portfolio-optimizer", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-a7b8c9d0e1f2", "description": "Chronicle audit — Chinese wall block" }
+            ]
+          },
+          {
+            "uuid": "obs-ae-003",
+            "description": "Approval bypass attempt: allocation-advisor tried to write allocations without human approval. Risk score: 98 (Critical). Blocked by SOE gate.",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-allocation-advisor", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-b8c9d0e1f2a3", "description": "Chronicle audit — approval bypass blocked" }
+            ]
+          },
+          {
+            "uuid": "obs-ae-004",
+            "description": "Rebalancing execution within IPS bounds. 12 trades proposed, all within concentration limits. Human approval received for batch.",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-rebalancer", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-c9d0e1f2a3b4", "description": "Chronicle audit — rebalancing executed" }
+            ]
+          },
+          {
+            "uuid": "obs-ae-005",
+            "description": "Factor analysis completed: 6 factor exposures analyzed across 4 portfolios. All read-only operations. No write attempts.",
+            "methods": ["AUTOMATED"],
+            "subjects": [{ "subject-uuid": "comp-factor-analyst", "type": "component" }],
+            "relevant-evidence": [
+              { "href": "urn:sentinel-ops:chronicle:aud-d0e1f2a3b4c5", "description": "Chronicle audit — factor analysis" }
+            ]
+          }
+        ]
+      }
+    ]
+  }
+}

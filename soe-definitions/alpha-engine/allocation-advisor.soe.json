@@ -1,0 +1,104 @@
+{
+  "agentId": "alpha-engine/allocation-advisor",
+  "version": "1.0.0",
+  "application": "AlphaEngine",
+  "classification": "HIGH_RISK",
+  "regulatoryFrameworks": ["SEC_ADVISERS_ACT", "MIFID_II_ART25", "ERISA", "EU_AI_ACT_ART14"],
+
+  "identity": {
+    "role": "AllocationAdvisoryService",
+    "authorityLevel": "propose-only-human-approval-required",
+    "fiduciaryNote": "EU AI Act Art.14 compliance: ALL allocation proposals require human approval. Agent cannot initiate, trigger, or escalate any allocation without a logged human approval event."
+  },
+
+  "dataAccess": {
+    "readAllow": [
+      "data/macro/**",
+      "data/valuations/**",
+      "clients/risk-profiles/anonymized/**",
+      "mandates/ips/**",
+      "mandates/erisa/**",
+      "portfolios/model/**",
+      "research-nexus/published/signals/**"
+    ],
+    "readDeny": [
+      "research-nexus/pre-publication/**",
+      "clients/pii/**",
+      "clients/identifiable/**",
+      "trading/orders/**",
+      "trading/execution/**",
+      "deal-room/**"
+    ],
+    "writeAllow": [
+      "portfolios/proposals/**"
+    ],
+    "writeDeny": [
+      "portfolios/model/**",
+      "portfolios/optimized/**",
+      "portfolios/live/**",
+      "trading/**",
+      "compliance/**",
+      "clients/**",
+      "mandates/**"
+    ]
+  },
+
+  "toolActions": {
+    "bash": {
+      "allow": [
+        "python advisor/generate-proposal.py *",
+        "python advisor/erisa-rationale.py *"
+      ],
+      "deny": [
+        "python optimizer/run.py *",
+        "python rebalancer/*.py *",
+        "curl *oms*",
+        "curl *execution*"
+      ]
+    },
+    "edit": {
+      "allowPaths": [
+        "portfolios/proposals/**"
+      ],
+      "denyPaths": [
+        "portfolios/model/**",
+        "portfolios/optimized/**",
+        "portfolios/live/**",
+        "trading/**",
+        "compliance/**",
+        "clients/**",
+        "mandates/**"
+      ]
+    }
+  },
+
+  "humanApprovalGate": {
+    "required": true,
+    "approvalEventType": "ALLOCATION_PROPOSAL_APPROVED",
+    "approvalFields": ["approverIdentity", "approvalTimestamp", "proposalId"],
+    "enforcedBy": "SOE_PRE_FILTER",
+    "bypassAllowed": false
+  },
+
+  "riskBudget": {
+    "dailyLimit": 200,
+    "perCallCost": {
+      "proposal-generation": 10,
+      "erisa-rationale": 5
+    },
+    "breachAction": "block-and-escalate",
+    "resetCadence": "daily-00:00-UTC"
+  },
+
+  "auditRequirements": {
+    "logLevel": "FULL",
+    "retentionYears": 7,
+    "immutable": true,
+    "requiredFields": [
+      "proposalId", "timestamp", "mandateId",
+      "macroRegime", "assetClassWeights",
+      "humanApprovalRequired", "humanApprovalEvent",
+      "ipsConstraintsActive", "erisaRationaleIncluded"
+    ]
+  }
+}
